@@ -1,0 +1,33 @@
+Index: .idea/compiler.xml
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+deleted file mode 100644
+--- a/.idea/compiler.xml	(revision 67374c9d5fa59c4436714afe9b22e1f9c9497161)
++++ /dev/null	(revision 67374c9d5fa59c4436714afe9b22e1f9c9497161)
+@@ -1,6 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="CompilerConfiguration">
+-    <bytecodeTargetLevel target="21" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_21\" default=\"true\" project-jdk-name=\"jbr-21\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 67374c9d5fa59c4436714afe9b22e1f9c9497161)
++++ b/.idea/misc.xml	(date 1740689060177)
+@@ -3,4 +3,7 @@
+   <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
++  <component name="ProjectType">
++    <option name="id" value="Android" />
++  </component>
+ </project>
+\ No newline at end of file

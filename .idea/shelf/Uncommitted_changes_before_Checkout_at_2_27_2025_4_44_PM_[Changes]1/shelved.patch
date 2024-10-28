@@ -1,0 +1,56 @@
+Index: .idea/compiler.xml
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+deleted file mode 100644
+--- a/.idea/compiler.xml	(revision e19b12532b48b4accaa0fc0acab29cc424b93151)
++++ /dev/null	(revision e19b12532b48b4accaa0fc0acab29cc424b93151)
+@@ -1,6 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="CompilerConfiguration">
+-    <bytecodeTargetLevel target="21" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: .idea/deploymentTargetSelector.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetSelector\">\r\n    <selectionStates>\r\n      <SelectionState runConfigName=\"app\">\r\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\r\n        <DropdownSelection timestamp=\"2024-12-03T19:38:21.475999200Z\">\r\n          <Target type=\"DEFAULT_BOOT\">\r\n            <handle>\r\n              <DeviceId pluginId=\"LocalEmulator\" identifier=\"path=C:\\Users\\yash7\\.android\\avd\\Pixel_9_API_35.avd\" />\r\n            </handle>\r\n          </Target>\r\n        </DropdownSelection>\r\n        <DialogSelection />\r\n      </SelectionState>\r\n    </selectionStates>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+--- a/.idea/deploymentTargetSelector.xml	(revision e19b12532b48b4accaa0fc0acab29cc424b93151)
++++ b/.idea/deploymentTargetSelector.xml	(date 1740690433403)
+@@ -4,10 +4,10 @@
+     <selectionStates>
+       <SelectionState runConfigName="app">
+         <option name="selectionMode" value="DROPDOWN" />
+-        <DropdownSelection timestamp="2024-12-03T19:38:21.475999200Z">
++        <DropdownSelection timestamp="2025-02-27T21:07:09.423343Z">
+           <Target type="DEFAULT_BOOT">
+             <handle>
+-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\yash7\.android\avd\Pixel_9_API_35.avd" />
++              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Yash\.android\avd\Pixel_9_Pro_API_35.avd" />
+             </handle>
+           </Target>
+         </DropdownSelection>
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_21\" default=\"true\" project-jdk-name=\"jbr-21\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision e19b12532b48b4accaa0fc0acab29cc424b93151)
++++ b/.idea/misc.xml	(date 1740690401435)
+@@ -3,4 +3,7 @@
+   <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
++  <component name="ProjectType">
++    <option name="id" value="Android" />
++  </component>
+ </project>
+\ No newline at end of file

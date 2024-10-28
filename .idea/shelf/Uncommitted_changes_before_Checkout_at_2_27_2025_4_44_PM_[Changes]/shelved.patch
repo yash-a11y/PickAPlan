@@ -1,0 +1,21 @@
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    alias(libs.plugins.android.application)\r\n    alias(libs.plugins.google.gms.google.services)\r\n}\r\n\r\nrepositories {\r\n    mavenCentral()\r\n}\r\n\r\nandroid {\r\n    namespace = \"com.example.pickaplan\"\r\n    compileSdk = 34\r\n\r\n    defaultConfig {\r\n        applicationId = \"com.example.pickaplan\"\r\n        minSdk = 24\r\n        targetSdk = 34\r\n        versionCode = 1\r\n        versionName = \"1.0\"\r\n\r\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            isMinifyEnabled = false\r\n            proguardFiles(\r\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\r\n                \"proguard-rules.pro\"\r\n            )\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility = JavaVersion.VERSION_1_8\r\n        targetCompatibility = JavaVersion.VERSION_1_8\r\n    }\r\n}\r\n\r\ndependencies {\r\n\r\n    implementation (\"com.google.android.material:material:1.9.0\") // Ensure you have this line\r\n    implementation (\"androidx.constraintlayout:constraintlayout:2.1.4\") // Optional if you're using ConstraintLayout\r\n    // Retrofit core\r\n    implementation(\"com.squareup.retrofit2:retrofit:2.9.0\")\r\n\r\n\r\n    //firebaseAuth\r\n\r\n    // Import the Firebase BoM\r\n    implementation(platform(\"com.google.firebase:firebase-bom:33.6.0\"))\r\n\r\n    // Add the dependency for Firebase Authentication\r\n    implementation(\"com.google.firebase:firebase-auth\")\r\n\r\n//    // Add the dependency for Google Play services\r\n//    implementation(\"com.google.android.gms:play-services-auth:21.2.0\")\r\n\r\n    //\r\n\r\n    // Converter for JSON (Gson)\r\n    implementation(\"com.squareup.retrofit2:converter-gson:2.9.0\")\r\n    implementation(libs.appcompat)\r\n    implementation(libs.material)\r\n    implementation(libs.activity)\r\n    implementation(libs.constraintlayout)\r\n    implementation(libs.firebase.auth)\r\n    implementation(libs.firebase.database)\r\n    implementation(libs.firebase.firestore)\r\n    testImplementation(libs.junit)\r\n    androidTestImplementation(libs.ext.junit)\r\n    androidTestImplementation(libs.espresso.core)\r\n    implementation (\"com.google.android.material:material:1.7.0\")\r\n    implementation (\"com.github.bumptech.glide:glide:4.12.0\")\r\n\r\n    // Razorpay SDK\r\n    implementation(\"com.razorpay:checkout:1.6.33\")\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	(revision e19b12532b48b4accaa0fc0acab29cc424b93151)
++++ b/app/build.gradle.kts	(date 1740690521283)
+@@ -3,9 +3,7 @@
+     alias(libs.plugins.google.gms.google.services)
+ }
+ 
+-repositories {
+-    mavenCentral()
+-}
++
+ 
+ android {
+     namespace = "com.example.pickaplan"
