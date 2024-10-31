@@ -10,4 +10,8 @@
     <style name="appTheme" parent="Theme.Material3.Dark.NoActionBar">
          <item name="android:background">@color/background</item>
     </style>
+
+    <style name="appThemeAction" parent="Theme.Material3.Dark">
+        <item name="android:background">@color/background</item>
+    </style>
 </resources>
