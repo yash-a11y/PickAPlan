@@ -23,14 +23,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        Button register = findViewById(R.id.btnsignup);
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, signUp.class);
-                startActivity(intent);
-            }
-        });
+//        Button register = findViewById(R.id.btnsignup);
+//        register.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainActivity.this, signUp.class);
+//                startActivity(intent);
+//            }
+//        });
 
     }
 }
