@@ -1,14 +1,17 @@
 package com.example.pickaplan.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.fragment.app.Fragment;
 
+import com.example.pickaplan.Plans;
 import com.example.pickaplan.R;
 import com.example.pickaplan.adapter.gridAdapter;
 
@@ -39,13 +42,12 @@ public class BrandActivity extends Fragment {
 
 
 
-
-
         GridView gridView = view.findViewById(R.id.grid_view);
 
         gridAdapter adapter = new gridAdapter(getActivity(),photouri);
 
         gridView.setAdapter(adapter);
+
 
         return view;
     }

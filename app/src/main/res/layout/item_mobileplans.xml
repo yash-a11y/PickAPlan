@@ -20,9 +20,9 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/fido"
-            android:backgroundTint="@color/cardcolor"/>
+            android:layout_height="10dp"
+            android:backgroundTint="@color/cardcolor"
+            app:srcCompat="@drawable/fido" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="205dp"
@@ -34,7 +34,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:backgroundTint="@color/cardcolor"
+                android:backgroundTint="@color/cardcolor2"
                 android:orientation="vertical"
                 android:padding="4dp">
 
@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:backgroundTint="@color/cardcolor"
+                    android:backgroundTint="@color/cardcolor2"
                     android:text="Fido Essentials"
                     android:textColor="#FFFFFF"
                     android:textSize="13sp"
@@ -92,30 +92,29 @@
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
             android:background="@color/border"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="5dp"/>
         <TextView
             android:id="@+id/tvPlanDescription"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="140dp"
             android:layout_marginTop="8dp"
             android:text="Data\n3 GB, 30 Days Validity\nTalk  Text\nUnlimited Canada-Wide\nExtras\nWi-Fi Calling, Text Internationally"
             android:textColor="#CCCCCC"
             android:textSize="14sp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="5dp"
             android:backgroundTint="@color/cardcolor"
             />
 
         <Button
             android:id="@+id/btnSelectPlan"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="43dp"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/primaryAccent"
             android:text="Select Plan"
             android:textColor="#121212"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
     </LinearLayout>
 

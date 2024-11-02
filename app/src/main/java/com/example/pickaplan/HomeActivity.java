@@ -1,7 +1,11 @@
 package com.example.pickaplan;
 
+import static androidx.core.app.PendingIntentCompat.getActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -89,6 +93,7 @@ public class HomeActivity extends AppCompatActivity {
         gridAdapter adapter = new gridAdapter(this,photouri);
 
         gridView.setAdapter(adapter);
+
 
     }
 
