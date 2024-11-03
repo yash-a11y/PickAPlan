@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:orientation="vertical">
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Discover"
+        android:textSize="25sp"
+        android:textFontWeight="700"
+        android:layout_margin="8dp"/>
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Explore top mobile plans tailored for your needs"
+        android:textSize="12sp"
+        android:layout_margin="8dp"/>
+
+    <!-- GridView -->
+    <GridView
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:id="@+id/grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:numColumns="2"
+        android:verticalSpacing="8dp"
+        android:horizontalSpacing="8dp"
+        android:layout_margin="8dp"/>
+
+</LinearLayout>

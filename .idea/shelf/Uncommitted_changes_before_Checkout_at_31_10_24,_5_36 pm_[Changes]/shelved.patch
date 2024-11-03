@@ -1,0 +1,322 @@
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:id=\"@+id/main\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\"\n    tools:context=\".MainActivity\">\n\n    <TextView\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:text=\"Hello World!\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintEnd_toEndOf=\"parent\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\" />\n\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_main.xml b/app/src/main/res/layout/activity_main.xml
+--- a/app/src/main/res/layout/activity_main.xml	(revision a170d44d0a0e64b7d65dcee26bd90601c44282a5)
++++ b/app/src/main/res/layout/activity_main.xml	(date 1730409428806)
+@@ -7,13 +7,21 @@
+     android:layout_height="match_parent"
+     tools:context=".MainActivity">
+ 
+-    <TextView
+-        android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:text="Hello World!"
+-        app:layout_constraintBottom_toBottomOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent"
+-        app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintTop_toTopOf="parent" />
++
++<!--    <Button-->
++<!--        android:id="@+id/btnsignup"-->
++<!--        android:layout_width="wrap_content"-->
++<!--        android:layout_height="wrap_content"-->
++<!--        android:layout_marginStart="144dp"-->
++<!--        android:layout_marginTop="532dp"-->
++<!--        android:layout_marginEnd="176dp"-->
++<!--        android:text="Button"-->
++<!--        app:layout_constraintEnd_toEndOf="parent"-->
++<!--        app:layout_constraintHorizontal_bias="1.0"-->
++<!--        app:layout_constraintStart_toStartOf="parent"-->
++<!--        app:layout_constraintTop_toTopOf="parent" />-->
++
++
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+ 
+-</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:tools=\"http://schemas.android.com/tools\">\n\n    <application\n        android:allowBackup=\"true\"\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\n        android:fullBackupContent=\"@xml/backup_rules\"\n        android:label=\"@string/app_name\"\n        android:supportsRtl=\"true\"\n        android:theme=\"@style/appTheme\"\n        tools:targetApi=\"31\">\n        <activity\n            android:name=\".splashActivity\"\n            android:exported=\"true\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\" />\n\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n        </activity>\n        <activity android:name=\".MainActivity\"/>\n        <activity android:name=\".HomeActivity\"/>\n    </application>\n\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision a170d44d0a0e64b7d65dcee26bd90601c44282a5)
++++ b/app/src/main/AndroidManifest.xml	(date 1730409646210)
+@@ -20,7 +20,6 @@
+             </intent-filter>
+         </activity>
+         <activity android:name=".MainActivity"/>
+-        <activity android:name=".HomeActivity"/>
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+Index: app/src/main/java/com/example/pickaplan/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.pickaplan;\n\nimport android.os.Bundle;\n\nimport androidx.activity.EdgeToEdge;\nimport androidx.appcompat.app.AppCompatActivity;\nimport androidx.core.graphics.Insets;\nimport androidx.core.view.ViewCompat;\nimport androidx.core.view.WindowInsetsCompat;\n\npublic class MainActivity extends AppCompatActivity {\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        EdgeToEdge.enable(this);\n        setContentView(R.layout.activity_main);\n\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/pickaplan/MainActivity.java b/app/src/main/java/com/example/pickaplan/MainActivity.java
+--- a/app/src/main/java/com/example/pickaplan/MainActivity.java	(revision a170d44d0a0e64b7d65dcee26bd90601c44282a5)
++++ b/app/src/main/java/com/example/pickaplan/MainActivity.java	(date 1730409428804)
+@@ -1,6 +1,12 @@
+ package com.example.pickaplan;
+ 
++import android.content.Intent;
+ import android.os.Bundle;
++import android.view.Menu;
++import android.view.MenuInflater;
++import android.view.View;
++import android.widget.Button;
++import android.widget.Toast;
+ 
+ import androidx.activity.EdgeToEdge;
+ import androidx.appcompat.app.AppCompatActivity;
+@@ -16,5 +22,15 @@
+         EdgeToEdge.enable(this);
+         setContentView(R.layout.activity_main);
+ 
++
++//        Button register = findViewById(R.id.btnsignup);
++//        register.setOnClickListener(new View.OnClickListener() {
++//            @Override
++//            public void onClick(View view) {
++//                Intent intent = new Intent(MainActivity.this, signUp.class);
++//                startActivity(intent);
++//            }
++//        });
++
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/res/menu/main_menue.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/menu/main_menue.xml b/app/src/main/res/menu/main_menue.xml
+new file mode 100644
+--- /dev/null	(date 1730409428806)
++++ b/app/src/main/res/menu/main_menue.xml	(date 1730409428806)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="utf-8"?>
++<menu xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    >
++    <item
++        android:id="@+id/menu_signup"
++        android:title="Sign Up"
++         />
++    <item
++        android:id="@+id/menu_aboutus"
++        android:title="About Us"
++        />
++
++</menu>
+\ No newline at end of file
+Index: app/src/main/java/com/example/pickaplan/signUp.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/pickaplan/signUp.java b/app/src/main/java/com/example/pickaplan/signUp.java
+new file mode 100644
+--- /dev/null	(date 1730409428804)
++++ b/app/src/main/java/com/example/pickaplan/signUp.java	(date 1730409428804)
+@@ -0,0 +1,20 @@
++package com.example.pickaplan;
++
++import android.os.Bundle;
++
++import androidx.activity.EdgeToEdge;
++import androidx.appcompat.app.AppCompatActivity;
++import androidx.core.graphics.Insets;
++import androidx.core.view.ViewCompat;
++import androidx.core.view.WindowInsetsCompat;
++
++public class signUp extends AppCompatActivity {
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        EdgeToEdge.enable(this);
++        setContentView(R.layout.activity_sign_up);
++
++    }
++}
+\ No newline at end of file
+Index: app/src/main/res/drawable/round_corner.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/drawable/round_corner.xml b/app/src/main/res/drawable/round_corner.xml
+new file mode 100644
+--- /dev/null	(date 1730409428805)
++++ b/app/src/main/res/drawable/round_corner.xml	(date 1730409428805)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <solid android:color="#000000" /> <!-- Background color -->
++    <corners android:radius="70dp" /> <!-- Corner radius for rounded corners -->
++    <stroke android:width="1dp" android:color="#DDDDDD" /> <!-- Optional border -->
++</shape>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_sign_up.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_sign_up.xml b/app/src/main/res/layout/activity_sign_up.xml
+new file mode 100644
+--- /dev/null	(date 1730409428806)
++++ b/app/src/main/res/layout/activity_sign_up.xml	(date 1730409428806)
+@@ -0,0 +1,138 @@
++<?xml version="1.0" encoding="utf-8"?>
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:background="#000000">
++
++
++    <TextView
++        android:id="@+id/signInTitle"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_alignParentTop="true"
++        android:layout_alignParentEnd="true"
++        android:layout_marginTop="180dp"
++        android:layout_marginEnd="176dp"
++        android:text="Sign In"
++        android:textColor="#FFFFFF"
++        android:textSize="24sp"
++        android:textStyle="bold" />
++
++    <TextView
++        android:id="@+id/subtitle"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_below="@id/signInTitle"
++        android:layout_centerHorizontal="true"
++        android:layout_marginTop="8dp"
++        android:text="Find your perfect plan, anytime, anywhere"
++        android:textColor="#FFFFFF"
++        android:textSize="14sp" />
++
++    <!-- Username/Email EditText -->
++    <EditText
++        android:id="@+id/usernameEditText"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_below="@id/subtitle"
++        android:layout_marginTop="32dp"
++        android:layout_marginHorizontal="32dp"
++        android:hint="Enter Username or Email"
++        android:padding="16dp"
++        android:textColorHint="#AAAAAA"
++        android:textColor="#FFFFFF"
++        android:background="@drawable/round_corner"
++        />
++
++    <!-- Password EditText -->
++    <EditText
++        android:id="@+id/passwordEditText"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_below="@id/usernameEditText"
++        android:layout_marginTop="16dp"
++        android:layout_marginHorizontal="32dp"
++        android:hint="Password"
++        android:padding="16dp"
++        android:textColorHint="#AAAAAA"
++        android:textColor="#FFFFFF"
++        android:background="@drawable/round_corner"
++        android:inputType="textPassword" />
++
++    <!-- Forgot Password Text -->
++    <TextView
++        android:id="@+id/forgotPasswordText"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_below="@id/passwordEditText"
++        android:layout_alignParentEnd="true"
++        android:layout_marginTop="8dp"
++        android:layout_marginEnd="32dp"
++        android:text="Forgot Password?"
++        android:textColor="#AAAAAA"
++        android:textSize="14sp" />
++
++    <!-- Sign In Button -->
++    <Button
++        android:id="@+id/signInButton"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_below="@id/forgotPasswordText"
++        android:layout_marginTop="24dp"
++        android:layout_marginHorizontal="32dp"
++        android:backgroundTint="#00C853"
++        android:text="Sign In"
++        android:textColor="#FFFFFF"
++        android:textAllCaps="false" />
++
++    <!-- Or Divider -->
++    <TextView
++        android:id="@+id/orText"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_below="@id/signInButton"
++        android:layout_centerHorizontal="true"
++        android:layout_marginTop="16dp"
++        android:text="Or"
++        android:textColor="#AAAAAA"
++        android:textSize="14sp" />
++
++    <!-- Google Sign-In Button -->
++
++    <!-- Apple Sign-In Button -->
++
++    <!-- Register Text -->
++
++    <ImageView
++        android:id="@+id/googleSignIn"
++        android:layout_width="48dp"
++        android:layout_height="48dp"
++        android:layout_below="@id/orText"
++        android:layout_marginTop="15dp"
++        android:layout_marginEnd="52dp"
++        android:layout_toStartOf="@+id/appleSignIn"
++        android:src="@drawable/google" />
++
++    <ImageView
++        android:id="@+id/appleSignIn"
++        android:layout_width="48dp"
++        android:layout_height="48dp"
++        android:layout_below="@id/orText"
++        android:layout_alignParentEnd="true"
++        android:layout_marginTop="15dp"
++        android:layout_marginEnd="142dp"
++        android:src="@drawable/apple" />
++
++    <TextView
++        android:id="@+id/registerText"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_alignParentStart="true"
++        android:layout_alignParentBottom="true"
++        android:layout_marginStart="96dp"
++        android:layout_marginBottom="50dp"
++        android:text="Not Have An Account? Register Now"
++        android:textColor="#00C853"
++        android:textSize="14sp" />
++
++</RelativeLayout>
