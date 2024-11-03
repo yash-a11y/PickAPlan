@@ -87,14 +87,15 @@
                 android:layout_margin="8dp"/>
 
             <!-- GridView -->
-            <GridView
-                android:id="@+id/grid_view_plans"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/plan_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
+                android:layout_gravity="center"
                 android:horizontalSpacing="8dp"
-                android:numColumns="2"
+                android:orientation="horizontal"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:verticalSpacing="8dp" />

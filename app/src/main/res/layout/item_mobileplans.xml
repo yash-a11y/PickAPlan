@@ -10,15 +10,16 @@
     >
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="330dp"
         android:backgroundTint="@color/cardcolor"
         android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
         android:padding="10dp">
 
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/brandimg"
             android:layout_width="match_parent"
             android:layout_height="10dp"
             android:backgroundTint="@color/cardcolor"
@@ -39,7 +40,7 @@
                 android:padding="4dp">
 
                 <TextView
-                    android:id="@+id/tvPlanTitle"
+                    android:id="@+id/planTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -57,7 +58,7 @@
             android:orientation="horizontal"
             android:backgroundTint="@color/cardcolor">
             <TextView
-                android:id="@+id/tvPlanPrice"
+                android:id="@+id/planPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
