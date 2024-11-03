@@ -2,12 +2,69 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="hello"
-        android:layout_gravity="center_vertical"
-        />
+        android:layout_height="wrap_content"
+        android:text="Testing"
+        android:textSize="25sp"
+        android:textFontWeight="700"
+        android:layout_margin="8dp"/>
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Here to screen to test different feratures"
+        android:textSize="12sp"
+        android:layout_margin="8dp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        >
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_word_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Word Count"
+            android:textColor="#00FF00"
+            app:chipBackgroundColor="@color/cardcolor2" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_page_ranking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Page Ranking"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
+            android:textColor="#FFFFFF"
+            app:chipBackgroundColor="@color/cardcolor2" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_liked_plans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Liked Plans"
+            android:textColor="#FFFFFF"
+            app:chipBackgroundColor="@color/cardcolor2" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="all features"
+        android:textSize="12sp"
+        android:layout_margin="8dp"/>
 </LinearLayout>
