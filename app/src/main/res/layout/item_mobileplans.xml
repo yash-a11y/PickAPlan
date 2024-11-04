@@ -26,7 +26,7 @@
             app:srcCompat="@drawable/fido" />
 
         <androidx.cardview.widget.CardView
-            android:layout_width="205dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="4dp"
             app:cardElevation="4dp"
