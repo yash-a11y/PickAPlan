@@ -17,10 +17,12 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
 
     private Context context;
     private List<planData> plans;
+    private int operator;
 
-    public plansAdapter(Context context, List<planData> plans){
+    public plansAdapter(Context context, List<planData> plans, int operator){
         this.plans = plans;
         this.context = context;
+        this.operator = operator;
     }
 
     @NonNull
@@ -35,9 +37,19 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
 
         planData plan = plans.get(position);
 
-        holder.brandImg.setImageResource(plan.getBrand());
+        switch (operator)
+        {
+            case 0: {
+                holder.brandImg.setImageResource(R.drawable.fido);
+            }
+            break;
+            case 1: {
+                holder.brandImg.setImageResource(R.drawable.rogers);
+            }
+        }
+
         holder.planName.setText(plan.getPlanName());
-        holder.price.setText("$"+plan.getPrice());
+        holder.price.setText(plan.getPrice());
         holder.details.setText(plan.getDetails());
     }
 

@@ -30,6 +30,14 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstantState);
         setContentView(R.layout.home_activity);
 
+        ImageView back_button = findViewById(R.id.back_button);
+
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         LinearLayout homenav = findViewById(R.id.nav_home);
         LinearLayout analyticnav = findViewById(R.id.nav_explore);
@@ -96,6 +104,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
+
 
     private void loadFragment(Fragment fragment) {
         if(fragment != null)

@@ -17,7 +17,7 @@ public class RetrofitClient {
                 .build();
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://10.0.2.2:8080/api/")  // Use your local machine's IP address or server URL
+                    .baseUrl("http://10.0.2.2:8080/plans/api/v.1/")  // Use your local machine's IP address or server URL
                     .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
