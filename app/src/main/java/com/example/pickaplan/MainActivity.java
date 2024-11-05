@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Fetch mobile plans from the API
-        fetchMobilePlans();
+       // fetchMobilePlans();
 
         // Fetch phone data from the API
         getSmartphones();
