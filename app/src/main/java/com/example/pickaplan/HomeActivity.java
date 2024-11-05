@@ -30,7 +30,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstantState);
         setContentView(R.layout.home_activity);
 
-
         LinearLayout homenav = findViewById(R.id.nav_home);
         LinearLayout analyticnav = findViewById(R.id.nav_explore);
         LinearLayout profilenav = findViewById(R.id.nav_account);
@@ -67,6 +66,14 @@ public class HomeActivity extends AppCompatActivity {
                 analysisIMG.setImageResource(R.drawable.analytics);
 
                 loadFragment(new BrandActivity());
+            }
+        });
+
+        profilenav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, signUp.class);
+                startActivity(intent);
             }
         });
 
