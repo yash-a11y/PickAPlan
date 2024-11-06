@@ -3,15 +3,15 @@ package com.example.pickaplan.dataClass;
 public class planData {
 
     private int brand;
-    private String planName;
-    private String price;
+    private String planname;
+    private String planprice;
 
     private String details;
 
     public planData(int brand, String planName, String price, String details) {
         this.brand = brand;
-        this.planName = planName;
-        this.price = price;
+        this.planname = planName;
+        this.planprice = price;
         this.details = details;
     }
 
@@ -20,11 +20,11 @@ public class planData {
     }
 
     public String getPrice() {
-        return price;
+        return planprice;
     }
 
     public String getPlanName() {
-        return planName;
+        return planname;
     }
 
     public String getDetails() {

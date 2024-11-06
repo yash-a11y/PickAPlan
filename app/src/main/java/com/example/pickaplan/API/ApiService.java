@@ -9,9 +9,9 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface ApiService {
-    @GET("plans")
-    Call<List<planData>> getMobilePlans();
+    @GET("fidoplans")
+    Call<List<planData>> getFidoPlans();
 
-    @GET("phones")
-    Call<List<phoneData>> getSmartphones();
+    @GET("rogersplans")
+    Call<List<planData>> getrogersPlans();
 }

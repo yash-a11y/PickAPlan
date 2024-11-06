@@ -30,6 +30,15 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstantState);
         setContentView(R.layout.home_activity);
 
+        ImageView back_button = findViewById(R.id.back_button);
+
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         LinearLayout homenav = findViewById(R.id.nav_home);
         LinearLayout analyticnav = findViewById(R.id.nav_explore);
         LinearLayout profilenav = findViewById(R.id.nav_account);
@@ -69,14 +78,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        profilenav.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, signUp.class);
-                startActivity(intent);
-            }
-        });
-
         List<Integer>  photouri = new ArrayList<>();
         photouri.add(
                 R.drawable.fido
@@ -103,6 +104,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
+
 
     private void loadFragment(Fragment fragment) {
         if(fragment != null)

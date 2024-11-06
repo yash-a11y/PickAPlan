@@ -2,11 +2,13 @@ package com.example.pickaplan;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,16 +35,28 @@ import retrofit2.Response;
 public class Plans extends AppCompatActivity {
 
     private RecyclerView plans;
+    private Intent intent;
+    private int oprator;
+
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plans);
 
+        progressBar = findViewById(R.id.progressBar);
        plans = findViewById(R.id.plan_view);
         //List<planData> list = new  ArrayList<>();
         plans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
 
         // Fetch mobile plans from the API
+        intent = getIntent();
+
+        oprator = intent.getIntExtra("operator",0);
+
+        progressBar.setVisibility(View.VISIBLE);
         fetchMobilePlans();
 
 //        list.add(new planData(R.drawable.fido,"Fido Essential","30",
@@ -104,8 +118,20 @@ public class Plans extends AppCompatActivity {
 
     private void fetchMobilePlans() {
         ApiService apiService = RetrofitClient.getApiService();
+        Call<List<planData>> call = null;
 
-        Call<List<planData>> call = apiService.getMobilePlans();
+        switch (oprator){
+            case 0: {
+                call =  apiService.getFidoPlans();;
+            }
+            break;
+            case 1:{
+                call = apiService.getrogersPlans();
+            }
+            break;
+            default:Log.d("selection_err","error");
+        }
+
         call.enqueue(new Callback<List<planData>>() {
             @Override
             public void onResponse(Call<List<planData>> call, Response<List<planData>> response) {
@@ -113,14 +139,16 @@ public class Plans extends AppCompatActivity {
                     List<planData> mobilePlans = response.body();
                     // Log the retrieved mobile plans data
                     for (planData plan : mobilePlans) {
-                        Log.d(TAG, "Plan Name: " + plan.getPlanName());
+                        Log.d("name", "Plan Name: " + plan.getPlanName());
                         //Log.d(TAG, "Plan Type: " + plan.getPlanType());
-                        Log.d(TAG, "Plan Details: " + plan.getDetails());
-                        Log.d(TAG, "Plan Price: " + plan.getPrice());
+                        Log.d("plan", "Plan Details: " + plan.getDetails());
+                        Log.d("price", "Plan Price: " + plan.getPrice());
                     }
-                    plansAdapter adpater = new plansAdapter(Plans.this,mobilePlans);
+                    plansAdapter adpater = new plansAdapter(Plans.this,mobilePlans,oprator);
 
                     plans.setAdapter(adpater);
+
+                    progressBar.setVisibility(View.GONE);
 
                 } else {
                     Toast.makeText(Plans.this, "Failed to load data", Toast.LENGTH_LONG).show();
@@ -131,6 +159,7 @@ public class Plans extends AppCompatActivity {
             public void onFailure(Call<List<planData>> call, Throwable t) {
                 Toast.makeText(Plans.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 Log.e("api_data", "API call failed: " + t.getMessage());
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

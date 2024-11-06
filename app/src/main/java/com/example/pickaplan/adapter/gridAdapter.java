@@ -61,6 +61,7 @@ public class gridAdapter extends BaseAdapter {
                 public void onClick(View v) {
 
                     Intent intent = new Intent(context, Plans.class);
+                    intent.putExtra("operator",position);
                     context.startActivity(intent);
 
                 }
