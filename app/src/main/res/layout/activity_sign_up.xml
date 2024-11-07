@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#000000">
 
 
@@ -43,7 +45,6 @@
         android:textColor="#FFFFFF"
         android:background="@drawable/round_corner"
         />
-
     <!-- Password EditText -->
     <EditText
         android:id="@+id/passwordEditText"
@@ -124,7 +125,7 @@
         android:src="@drawable/apple" />
 
     <TextView
-        android:id="@+id/registerText"
+        android:id="@+id/HomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
