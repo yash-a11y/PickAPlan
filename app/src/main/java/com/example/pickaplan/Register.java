@@ -54,7 +54,6 @@ public class Register extends AppCompatActivity {
             }
         });
 
-
     }
     private boolean validateInputs() {
 
