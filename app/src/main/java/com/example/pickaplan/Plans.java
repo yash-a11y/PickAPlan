@@ -2,6 +2,7 @@ package com.example.pickaplan;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,12 @@ import com.example.pickaplan.dataClass.planData;
 import com.example.pickaplan.fragments.BrandActivity;
 import com.example.pickaplan.fragments.analyticsFragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +44,8 @@ public class Plans extends AppCompatActivity {
     private RecyclerView plans;
     private Intent intent;
     private int oprator;
+
+    private Context context = this;
 
     private ProgressBar progressBar;
     @Override
@@ -117,26 +126,59 @@ public class Plans extends AppCompatActivity {
     }
 
     private void fetchMobilePlans() {
+
+
+
         ApiService apiService = RetrofitClient.getApiService();
         Call<List<planData>> call = null;
+        String operator = "";
 
         switch (oprator){
             case 0: {
-                call =  apiService.getFidoPlans();;
+
+
+                    call =  apiService.getFidoPlans();
+
+                    callApi(call,"fido.csv");
+
             }
             break;
             case 1:{
-                call = apiService.getrogersPlans();
+
+                    call = apiService.getrogersPlans();
+
+                    callApi(call,"rogers.csv");
+
+
             }
             break;
             default:Log.d("selection_err","error");
         }
+
+
+
+
+    }
+
+    private void loadFragment(Fragment fragment)
+    {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container,fragment)
+                .commit();
+    }
+
+    private void callApi( Call<List<planData>> call,String fileName)
+    {
+
 
         call.enqueue(new Callback<List<planData>>() {
             @Override
             public void onResponse(Call<List<planData>> call, Response<List<planData>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<planData> mobilePlans = response.body();
+
+
+
                     // Log the retrieved mobile plans data
                     for (planData plan : mobilePlans) {
                         Log.d("name", "Plan Name: " + plan.getPlanName());
@@ -144,9 +186,14 @@ public class Plans extends AppCompatActivity {
                         Log.d("plan", "Plan Details: " + plan.getDetails());
                         Log.d("price", "Plan Price: " + plan.getPrice());
                     }
+
+                    saveDataToCSV(mobilePlans,fileName);
+
                     plansAdapter adpater = new plansAdapter(Plans.this,mobilePlans,oprator);
 
                     plans.setAdapter(adpater);
+
+
 
                     progressBar.setVisibility(View.GONE);
 
@@ -164,10 +211,26 @@ public class Plans extends AppCompatActivity {
         });
     }
 
-    private void loadFragment(Fragment fragment)
-    {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container,fragment)
-                .commit();
+
+    private void saveDataToCSV(List<planData> data,String fileName) {
+        File csvFile = new File(getExternalFilesDir(null), fileName);
+        try (FileWriter writer = new FileWriter(csvFile)) {
+            // Write CSV Header
+            writer.append("Field1,Field2,Field3\n");
+
+            // Write data rows
+            for (planData item : data) {
+                writer.append(item.getPlanName()).append(",");
+                writer.append(item.getPrice()).append(",");
+                writer.append(item.getDetails()).append("\n");
+            }
+
+            writer.flush();
+            Toast.makeText(this, "Data saved to CSV!", Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to save data!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

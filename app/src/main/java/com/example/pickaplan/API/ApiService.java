@@ -7,6 +7,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface ApiService {
     @GET("fidoplans")
@@ -14,4 +15,8 @@ public interface ApiService {
 
     @GET("rogersplans")
     Call<List<planData>> getrogersPlans();
+
+
+    @GET("ranking")
+    Call<List<String>> getRanking(@Query("keyword") String key);
 }
