@@ -49,7 +49,7 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
         }
 
         holder.planName.setText(plan.getPlanName());
-        holder.price.setText(plan.getPrice());
+        holder.price.setText("$"+plan.getPrice());
         holder.details.setText(plan.getDetails());
     }
 

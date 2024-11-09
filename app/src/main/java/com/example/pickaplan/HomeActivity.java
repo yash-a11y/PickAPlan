@@ -105,6 +105,14 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        profilenav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, signUp.class);
+                startActivity(intent);
+            }
+        });
+
         List<Integer>  photouri = new ArrayList<>();
         photouri.add(
                 R.drawable.fido
