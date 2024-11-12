@@ -5,16 +5,44 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.pickaplan.R;
+import com.google.android.material.chip.Chip;
 
 public class analyticsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup views, Bundle savedState)
     {
-        return layoutInflater.inflate(R.layout.analytics_activity,views,false);
+        View view =  layoutInflater.inflate(R.layout.analytics_activity,views,false);
+
+
+        Chip pageRank = view.findViewById(R.id.chip_page_ranking);
+
+        pageRank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pageRank.setTextColor(ContextCompat.getColor(view.getContext(), R.color.primaryAccent));
+                loadFragment(new pageRanking());
+            }
+        });
+
+        return view;
+
+
+
+    }
+
+
+    private void loadFragment(Fragment fragment) {
+        if(fragment != null)
+        {
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container,fragment)
+                    .commit();
+        }
     }
 
 }
