@@ -165,6 +165,12 @@ public class Plans extends AppCompatActivity {
 
             }
             break;
+            case 2:{
+                call = apiService.getTelusPlans();
+
+                callApi(call,"telus.csv");
+            }
+            break;
             default:Log.d("selection_err","error");
         }
 

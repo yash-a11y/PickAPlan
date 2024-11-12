@@ -16,6 +16,8 @@ public interface ApiService {
     @GET("rogersplans")
     Call<List<planData>> getrogersPlans();
 
+    @GET("telusplans")
+    Call<List<planData>> getTelusPlans();
 
     @GET("ranking")
     Call<List<String>> getRanking(@Query("keyword") String key);

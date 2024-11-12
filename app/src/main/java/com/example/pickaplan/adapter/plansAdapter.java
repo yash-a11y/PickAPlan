@@ -46,6 +46,10 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
             case 1: {
                 holder.brandImg.setImageResource(R.drawable.rogers);
             }
+            break;
+            case 2: {
+                holder.brandImg.setImageResource(R.drawable.telus);
+            }
         }
 
         holder.planName.setText(plan.getPlanName());
