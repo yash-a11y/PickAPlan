@@ -1,11 +1,13 @@
 package com.example.pickaplan.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pickaplan.R;
@@ -36,6 +38,7 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
     public void onBindViewHolder(@NonNull myViewholder holder, int position) {
 
         planData plan = plans.get(position);
+        Log.d("plansAdapter", "Binding plan at position: " + position + ", Name: " + plan.getPlanName());
 
         switch (operator)
         {
@@ -58,7 +61,11 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
         return plans.size();
     }
 
+    public void updateData(List<planData> newItems) {
+        plans.clear();
+        plans.addAll(newItems);
+        notifyDataSetChanged();  // Refreshes the entire RecyclerView
+    }
 
 }
-
 

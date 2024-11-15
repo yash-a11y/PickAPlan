@@ -52,10 +52,10 @@
             app:chipBackgroundColor="@color/cardcolor2" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_liked_plans"
+            android:id="@+id/chip_search_freq"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Liked Plans"
+            android:text="Search Frequency"
             android:textColor="#FFFFFF"
             app:chipBackgroundColor="@color/cardcolor2" />
     </LinearLayout>

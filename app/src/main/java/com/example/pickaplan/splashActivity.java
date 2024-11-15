@@ -9,6 +9,8 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
+
 public class splashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,12 @@ public class splashActivity extends AppCompatActivity {
             Intent intent = new Intent(splashActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
-        }, 3000);
+        }, 6000);
+
+        new Thread(() -> {
+
+
+
+        }).start();
     }
 }
