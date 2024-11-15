@@ -14,7 +14,7 @@ import com.google.android.material.chip.Chip;
 
 public class frequencyCount extends Fragment {
 
-    private Chip frefido, freRogers;
+    private Chip frefido, freRogers ,freTellus ;
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup views, Bundle savedState) {
@@ -37,6 +37,16 @@ public class frequencyCount extends Fragment {
             @Override
             public void onClick(View view) {
                 String fileName="rogers.csv";
+                loadFragment(new operatorfrecount(fileName));
+            }
+        });
+
+        freTellus = view.findViewById(R.id.chip_tellus);
+
+        freTellus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String fileName="telus.csv";
                 loadFragment(new operatorfrecount(fileName));
             }
         });
