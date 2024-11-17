@@ -190,6 +190,26 @@ public class Plans extends AppCompatActivity {
 
             }
             break;
+            case 2:{
+
+
+                call = apiService.getTelusPlan();
+                fileName = "telus.csv";
+                callApi(call);
+
+
+            }
+            break;
+            case 3:{
+
+
+                call = apiService.getVirginPlans();
+                fileName = "virgin.csv";
+                callApi(call);
+
+
+            }
+            break;
             default:Log.d("selection_err","error");
         }
 
@@ -378,6 +398,7 @@ public class Plans extends AppCompatActivity {
                     tracker.search(searchTerm);
                     tracker.updateLogFile();
                     searchBar.setText("");              // Clear the input field if needed
+                    Log.d("serchterm ",searchTerm);
                 }
 
                 // keyboard logic

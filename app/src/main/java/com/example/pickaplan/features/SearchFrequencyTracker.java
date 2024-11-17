@@ -7,7 +7,7 @@ import java.util.*;
 
 public class SearchFrequencyTracker {
 
-    private final String logFileName = "search_log3.txt"; // Name of the log file
+    private final String logFileName = "search.txt"; // Name of the log file
     private final HashMap<String, Integer> searchFrequencyMap;
     private final List<String> data;
     private final Context context;
@@ -57,6 +57,7 @@ public class SearchFrequencyTracker {
     // Update the log file with the current search frequencies on external storage
     public void updateLogFile() {
         File file = new File(context.getExternalFilesDir(null), logFileName);
+        Log.d("dir",context.getExternalFilesDir(null).toString());
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             for (Map.Entry<String, Integer> entry : searchFrequencyMap.entrySet()) {

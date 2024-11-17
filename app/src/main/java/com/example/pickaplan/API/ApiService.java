@@ -19,4 +19,10 @@ public interface ApiService {
 
     @GET("ranking")
     Call<List<String>> getRanking(@Query("keyword") String key);
+
+    @GET("virginplans")
+    Call<List<planData>> getVirginPlans();
+
+    @GET("telusplans")
+    Call<List<planData>> getTelusPlan();
 }
