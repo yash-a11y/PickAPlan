@@ -4,9 +4,15 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -21,8 +27,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pickaplan.API.ApiService;
 import com.example.pickaplan.API.RetrofitClient;
+import com.example.pickaplan.adapter.SuggestionsAdapter;
 import com.example.pickaplan.adapter.plansAdapter;
 import com.example.pickaplan.dataClass.planData;
+import com.example.pickaplan.features.SearchFrequencyTracker;
+import com.example.pickaplan.features.WordCompletion.AVLTree;
+import com.example.pickaplan.features.WordCompletion.MinHeap;
+import com.example.pickaplan.features.patternFind;
 import com.example.pickaplan.fragments.BrandActivity;
 import com.example.pickaplan.fragments.analyticsFragment;
 
@@ -43,13 +54,23 @@ import retrofit2.Response;
 
 public class Plans extends AppCompatActivity {
 
+    private AVLTree tree;
+
+    private SearchFrequencyTracker tracker;
     private RecyclerView plans;
     private Intent intent;
     private int oprator;
 
+    private String fileName;
+
     private Context context = this;
 
     private ProgressBar progressBar;
+
+    private EditText searchBar;
+
+
+    private   plansAdapter adpater;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -59,7 +80,9 @@ public class Plans extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         ImageView back_button = findViewById(R.id.back_button);
+        searchBar = findViewById(R.id.search_bar);
        plans = findViewById(R.id.plan_view);
+        tracker = new SearchFrequencyTracker(this);
         //List<planData> list = new  ArrayList<>();
         plans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
 
@@ -136,6 +159,7 @@ public class Plans extends AppCompatActivity {
             }
         });
 
+     searchOperations();
     }
 
     private void fetchMobilePlans() {
@@ -144,23 +168,44 @@ public class Plans extends AppCompatActivity {
 
         ApiService apiService = RetrofitClient.getApiService();
         Call<List<planData>> call = null;
-        String operator = "";
+
 
         switch (oprator){
             case 0: {
 
 
                     call =  apiService.getFidoPlans();
-
-                    callApi(call,"fido.csv");
+                    fileName = "fido.csv";
+                    callApi(call);
 
             }
             break;
             case 1:{
 
-                    call = apiService.getrogersPlans();
 
-                    callApi(call,"rogers.csv");
+                    call = apiService.getrogersPlans();
+                    fileName = "rogers.csv";
+                    callApi(call);
+
+
+            }
+            break;
+            case 2:{
+
+
+                call = apiService.getTelusPlan();
+                fileName = "telus.csv";
+                callApi(call);
+
+
+            }
+            break;
+            case 3:{
+
+
+                call = apiService.getVirginPlans();
+                fileName = "virgin.csv";
+                callApi(call);
 
 
             }
@@ -192,18 +237,40 @@ public class Plans extends AppCompatActivity {
                 .commit();
     }
 
-    private void callApi( Call<List<planData>> call,String fileName)
+    private void callApi( Call<List<planData>> call)
     {
 
+        tree = new AVLTree();
 // Attempt to load data from CSV first
-        List<planData> mobilePlans = loadDataFromCSV(fileName);
+        List<planData> mobilePlans = loadDataFromCSV();
 
 // If CSV data is available, use it; otherwise, make the API call
         if (!mobilePlans.isEmpty()) {
             // Data was loaded from CSV
             Log.d("DataSource", "Data loaded from CSV.");
-            plansAdapter adpater = new plansAdapter(Plans.this, mobilePlans, oprator);
-            plans.setAdapter(adpater);  // Set up RecyclerView with loaded data
+
+
+            //new thread
+
+            new Thread(() -> {
+                for(planData planData : mobilePlans)
+                {
+
+                    splitData(planData.getPlanName());
+                    splitData(planData.getPrice());
+                    splitData(planData.getDetails());
+
+
+                }
+            }).start();
+
+
+
+            //
+
+            updateRecyclerView(mobilePlans);
+//            plansAdapter adpater = new plansAdapter(Plans.this, mobilePlans, oprator);
+//            plans.setAdapter(adpater);  // Set up RecyclerView with loaded data
             progressBar.setVisibility(View.GONE);
         } else {
 
@@ -224,12 +291,25 @@ public class Plans extends AppCompatActivity {
                         }
 
 
+                        //new thread
 
-                        plansAdapter adpater = new plansAdapter(Plans.this, mobilePlans, oprator);
+                        new Thread(() -> {
+                            for(planData planData : mobilePlans)
+                            {
 
-                        plans.setAdapter(adpater);
+                                splitData(planData.getPlanName());
+                                splitData(planData.getPrice());
+                                splitData(planData.getDetails());
 
-                        saveDataToCSV(mobilePlans, fileName);
+
+                            }
+                        }).start();
+
+
+                        //
+
+                        updateRecyclerView(mobilePlans);
+                        saveDataToCSV(mobilePlans);
                         progressBar.setVisibility(View.GONE);
 
                     } else {
@@ -248,7 +328,7 @@ public class Plans extends AppCompatActivity {
     }
 
 
-    private void saveDataToCSV(List<planData> data,String fileName) {
+    private void saveDataToCSV(List<planData> data) {
         File csvFile = new File(getExternalFilesDir(null), fileName);
         try (FileWriter writer = new FileWriter(csvFile)) {
             // Write CSV Headere
@@ -270,7 +350,7 @@ public class Plans extends AppCompatActivity {
         }
     }
 
-    private List<planData> loadDataFromCSV(String fileName) {
+    private List<planData> loadDataFromCSV() {
         List<planData> data = new ArrayList<>();
         File csvFile = new File(getExternalFilesDir(null), fileName);
 
@@ -294,4 +374,134 @@ public class Plans extends AppCompatActivity {
         return data;
     }
 
+
+    //split data
+
+    public void splitData(String line)
+    {
+            String[] words = line.split(" ");
+            for (String word : words) {
+                Log.d("word",word);
+                tree.insert(word.toLowerCase());
+            }
+
+    }
+
+    //
+
+    //search operation
+
+    private void searchOperations() {
+        RecyclerView suggestionsRecyclerView = findViewById(R.id.suggestionsRV);
+
+        tree = new AVLTree();
+
+        // Set up RecyclerView with LinearLayoutManager
+        suggestionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        SuggestionsAdapter suggestionsAdapter = new SuggestionsAdapter(new ArrayList<>());
+        suggestionsRecyclerView.setAdapter(suggestionsAdapter);
+
+
+        // for search frequency
+        searchBar.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String searchTerm = searchBar.getText().toString().trim();
+                if (!searchTerm.isEmpty()) {
+                    tracker.search(searchTerm);
+                    tracker.updateLogFile();
+                    searchBar.setText("");              // Clear the input field if needed
+                    Log.d("serchterm ",searchTerm);
+                }
+
+                // keyboard logic
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
+                }
+
+                //pattern search
+                patternFind patternFind =  new patternFind();
+                List<planData> planData = loadDataFromCSV();
+
+
+                planData = patternFind.searchResults(planData,searchTerm);
+                for(planData e : planData)Log.d("pdata",e.getPlanName());
+
+                updateRecyclerView(planData);
+
+                //
+
+                return true; // Consume the action
+            }
+            return false;
+        });
+
+
+        // for word completion
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String input = s.toString().toLowerCase();
+                if (input.isEmpty()) {
+                    suggestionsRecyclerView.setVisibility(View.GONE); // Hide suggestions RecyclerView
+                    suggestionsAdapter.updateSuggestions(new ArrayList<>()); // Clear the suggestions
+                } else {
+
+
+
+                    List<String> suggestions = new ArrayList<>();
+                    tree.autocomplete(input, suggestions);
+
+                    // Sort and limit suggestions using MinHeap
+                    MinHeap minHeap = new MinHeap(10);  // Show top 10 suggestions
+                    for (String suggestion : suggestions) {
+                        String[] parts = suggestion.split(" \\(");
+                        String word = parts[0];
+                        int frequency = Integer.parseInt(parts[1].replace(")", ""));
+                        minHeap.insert(word, frequency);
+                    }
+
+                    List<String> topSuggestions = minHeap.getTopSuggestions();
+                    Log.d("top", topSuggestions.toString());
+
+                    // Update the adapter with the new suggestions
+                    suggestionsAdapter.updateSuggestions(topSuggestions);
+
+                    // Make the RecyclerView visible if it has suggestions
+                    if (!topSuggestions.isEmpty()) {
+                        suggestionsRecyclerView.setVisibility(View.VISIBLE);
+                    } else {
+                        suggestionsRecyclerView.setVisibility(View.GONE); // Hide if no suggestions
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+        });
+    }
+
+
+    private void updateRecyclerView(List<planData> newPlanData) {
+        try {
+            if (adpater == null) {
+                adpater = new plansAdapter(Plans.this, newPlanData, oprator);
+                plans.setAdapter(adpater);
+            } else {
+                adpater.updateData(newPlanData);
+            }
+        } catch (Exception e) {
+            Log.e("UpdateError", "Error updating RecyclerView: " + e.getMessage());
+            Toast.makeText(this, "Error updating data. Please try again.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    //
 }

@@ -34,6 +34,8 @@ android {
 
 dependencies {
 
+    implementation ("com.google.android.material:material:1.9.0") // Ensure you have this line
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4") // Optional if you're using ConstraintLayout
     // Retrofit core
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
 

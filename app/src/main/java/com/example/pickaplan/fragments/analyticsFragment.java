@@ -21,10 +21,19 @@ public class analyticsFragment extends Fragment {
 
 
         Chip pageRank = view.findViewById(R.id.chip_page_ranking);
+        Chip searchFreq = view.findViewById(R.id.chip_search_freq);
+
+        searchFreq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadFragment(new searchFreq());
+            }
+        });
 
         pageRank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 pageRank.setTextColor(ContextCompat.getColor(view.getContext(), R.color.primaryAccent));
                 loadFragment(new pageRanking());
             }
