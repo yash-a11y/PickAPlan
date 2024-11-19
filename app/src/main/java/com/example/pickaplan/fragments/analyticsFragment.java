@@ -49,6 +49,15 @@ public class analyticsFragment extends Fragment {
             }
         });
 
+        Chip invertedIndexchip = view.findViewById(R.id.chip_invertedIndex);
+
+        invertedIndexchip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadFragment(new invertedIndex());
+            }
+        });
+
         return view;
 
     }
