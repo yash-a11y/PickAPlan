@@ -5,26 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Testing"
-        android:textSize="25sp"
-        android:textFontWeight="700"
-        android:layout_margin="8dp"/>
-
-    <TextView
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Here to screen to test different feratures"
-        android:textSize="12sp"
-        android:layout_margin="8dp"/>
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,35 +14,48 @@
         >
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_frequency_count"
+            android:id="@+id/chip_fido"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Frequency Count"
+            android:text="Fido"
             android:textColor="@color/primaryAccent"
             app:chipBackgroundColor="@color/cardcolor2" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_page_ranking"
+            android:id="@+id/chip_rogers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Page Ranking"
+            android:text="Rogers"
             android:layout_marginStart="7dp"
             android:layout_marginEnd="7dp"
             android:textColor="#FFFFFF"
             app:chipBackgroundColor="@color/cardcolor2" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_search_freq"
+            android:id="@+id/chip_virgin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search Frequency"
+            android:text="Virgin"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
+            android:textColor="#FFFFFF"
+            app:chipBackgroundColor="@color/cardcolor2" />
+
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_tellus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Telus"
             android:textColor="#FFFFFF"
             app:chipBackgroundColor="@color/cardcolor2" />
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/fragment_container_operator"
         android:layout_width="match_parent"
+        android:layout_margin="10dp"
         android:layout_height="0dp"
         android:layout_weight="1"/>
+
 </LinearLayout>
