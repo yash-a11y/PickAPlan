@@ -19,7 +19,8 @@
 
         <activity
             android:name=".Plans"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".splashActivity"
             android:exported="true" >
