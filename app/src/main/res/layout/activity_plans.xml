@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/appThemeAction"
+    android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
@@ -61,17 +63,20 @@
         android:imeOptions="actionSearch"/>
 
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/suggestionsRV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1">
+
 
 
         <LinearLayout   android:layout_width="match_parent"
@@ -105,12 +110,20 @@
                 android:visibility="gone" />
 
             <!-- GridView -->
+            <TextView
+                android:id="@+id/notFound"
+                android:layout_marginTop="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Math Not Found"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/plan_view"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:layout_margin="8dp"
-                android:layout_weight="1"
                 android:layout_gravity="center"
                 android:horizontalSpacing="8dp"
                 android:orientation="horizontal"

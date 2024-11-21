@@ -69,6 +69,8 @@ public class Plans extends AppCompatActivity {
 
     private EditText searchBar;
 
+    private TextView notFound;
+
 
     private   plansAdapter adpater;
     @Override
@@ -78,6 +80,7 @@ public class Plans extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plans);
 
+        notFound = findViewById(R.id.notFound);
         progressBar = findViewById(R.id.progressBar);
         ImageView back_button = findViewById(R.id.back_button);
         searchBar = findViewById(R.id.search_bar);
@@ -385,13 +388,14 @@ public class Plans extends AppCompatActivity {
         tree = new AVLTree();
 
         // Set up RecyclerView with LinearLayoutManager
-        suggestionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        suggestionsRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         SuggestionsAdapter suggestionsAdapter = new SuggestionsAdapter(new ArrayList<>());
         suggestionsRecyclerView.setAdapter(suggestionsAdapter);
 
 
         // for search frequency
         searchBar.setOnEditorActionListener((v, actionId, event) -> {
+            notFound.setVisibility(View.GONE);
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String searchTerm = searchBar.getText().toString().trim();
                 if (!searchTerm.isEmpty()) {
@@ -413,9 +417,18 @@ public class Plans extends AppCompatActivity {
 
 
                 planData = patternFind.searchResults(planData,searchTerm);
-                for(planData e : planData)Log.d("pdata",e.getPlanName());
 
-                updateRecyclerView(planData);
+
+                if(planData.isEmpty()){
+
+
+                    Toast.makeText(this,"No Match Found",Toast.LENGTH_LONG).show();
+                }
+                else{
+                    for(planData e : planData)Log.d("pdata",e.getPlanName());
+                    updateRecyclerView(planData);
+                }
+
 
                 //
 
@@ -432,6 +445,7 @@ public class Plans extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                notFound.setVisibility(View.GONE);
                 String input = s.toString().toLowerCase();
                 if (input.isEmpty()) {
                     suggestionsRecyclerView.setVisibility(View.GONE); // Hide suggestions RecyclerView

@@ -1,5 +1,6 @@
 package com.example.pickaplan.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +24,19 @@ public class searchAdapter extends RecyclerView.Adapter<searchAdapter.searchVH> 
 
     @Override
     public searchVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pagerank_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
         return new searchVH(view);
     }
 
     @Override
     public void onBindViewHolder(searchVH holder, int position) {
-        holder.suggestionText.setText(suggestions.get(position));
+        String wordFreq = suggestions.get(position);
+        String[] contents = wordFreq.split(",");
+
+
+        holder.searchWord.setText(String.valueOf(contents[0]));
+        Log.d("wordv",holder.searchWord.getText().toString());
+        holder.freq.setText(contents[1].trim());
     }
 
     @Override
@@ -45,11 +52,13 @@ public class searchAdapter extends RecyclerView.Adapter<searchAdapter.searchVH> 
 
     public static class searchVH extends RecyclerView.ViewHolder {
 
-        TextView suggestionText;
+        TextView searchWord;
+        TextView freq;
 
         public searchVH(View itemView) {
             super(itemView);
-            suggestionText = itemView.findViewById(R.id.linkTxt);
+            searchWord = itemView.findViewById(R.id.word);
+            freq  = itemView.findViewById(R.id.freqV);
         }
     }
 }
