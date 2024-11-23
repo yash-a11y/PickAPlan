@@ -70,12 +70,18 @@ public class SearchFrequencyTracker {
     }
 
     // Method to display the top 3 most searched terms
-    public void displayTopSearches() {
+    public List<String> displayTopSearches() {
+        List<String> topSearch = new ArrayList<>();
         System.out.println("Top 3 Searches:");
         searchFrequencyMap.entrySet().stream()
                 .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
                 .limit(3)
-                .forEach(entry -> Log.d("searchf", "Word: " + entry.getKey() + ", Frequency: " + entry.getValue()));
+                .forEach(entry -> {
+                    Log.d("searchf", "Word: " + entry.getKey() + ", Frequency: " + entry.getValue());
+                    topSearch.add(entry.getKey()+"("+entry.getValue()+")");
+                });
+
+        return topSearch;
     }
 
     // Method to get the frequency of a searched word
