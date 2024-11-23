@@ -34,6 +34,7 @@ import com.example.pickaplan.features.SearchFrequencyTracker;
 import com.example.pickaplan.features.WordCompletion.AVLTree;
 import com.example.pickaplan.features.WordCompletion.MinHeap;
 import com.example.pickaplan.features.patternFind;
+import com.example.pickaplan.features.spellCheck.SpellChecker;
 import com.example.pickaplan.fragments.BrandActivity;
 import com.example.pickaplan.fragments.analyticsFragment;
 
@@ -58,9 +59,12 @@ public class Plans extends AppCompatActivity {
 
     private SearchFrequencyTracker tracker;
     private RecyclerView plans;
+    private RecyclerView searchRV;
     private Intent intent;
     private int oprator;
+    List<String> topSearch = new ArrayList<>();
 
+    private SpellChecker spellChecker;
     private String fileName;
 
     private Context context = this;
@@ -71,6 +75,8 @@ public class Plans extends AppCompatActivity {
 
     private TextView notFound;
 
+    private SuggestionsAdapter searchAdp;
+
 
     private   plansAdapter adpater;
     @Override
@@ -80,6 +86,8 @@ public class Plans extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plans);
 
+        searchRV = findViewById(R.id.searchRV);
+
         notFound = findViewById(R.id.notFound);
         progressBar = findViewById(R.id.progressBar);
         ImageView back_button = findViewById(R.id.back_button);
@@ -88,7 +96,7 @@ public class Plans extends AppCompatActivity {
         tracker = new SearchFrequencyTracker(this);
         //List<planData> list = new  ArrayList<>();
         plans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
-
+        searchRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
         // Fetch mobile plans from the API
         intent = getIntent();
 
@@ -96,6 +104,7 @@ public class Plans extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
         fetchMobilePlans();
+        topSearch = tracker.displayTopSearches();
 
 //        list.add(new planData(R.drawable.fido,"Fido Essential","30",
 //                "\"Data\\n3 GB, 30 Days Validity\\nTalk  Text\\nUnlimited Canada-Wide\\nExtras\\nWi-Fi Calling, Text Internationally"));
@@ -111,6 +120,12 @@ public class Plans extends AppCompatActivity {
 //        list.add(new planData(R.drawable.fido,"Fido Essential","30",
 //                "\"Data\\n3 GB, 30 Days Validity\\nTalk  Text\\nUnlimited Canada-Wide\\nExtras\\nWi-Fi Calling, Text Internationally"));
 
+        if(!topSearch.isEmpty())
+        {
+            searchRV.setVisibility(View.VISIBLE);
+            searchAdp = new SuggestionsAdapter(topSearch);
+            searchRV.setAdapter(searchAdp);
+        }
 
 
         LinearLayout homeNav = findViewById(R.id.nav_home);
@@ -395,13 +410,23 @@ public class Plans extends AppCompatActivity {
 
         // for search frequency
         searchBar.setOnEditorActionListener((v, actionId, event) -> {
+            String rightSpelling = ""; 
+            
+            List<planData> planData = loadDataFromCSV();
             notFound.setVisibility(View.GONE);
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String searchTerm = searchBar.getText().toString().trim();
                 if (!searchTerm.isEmpty()) {
                     tracker.search(searchTerm);
-                    tracker.updateLogFile();
+
+                    try {
+                        spellChecker = new SpellChecker(planData);
+                        rightSpelling =  spellChecker.spellcheck(this,searchTerm);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     searchBar.setText("");              // Clear the input field if needed
+
                     Log.d("serchterm ",searchTerm);
                 }
 
@@ -413,21 +438,31 @@ public class Plans extends AppCompatActivity {
 
                 //pattern search
                 patternFind patternFind =  new patternFind();
-                List<planData> planData = loadDataFromCSV();
+
 
 
                 planData = patternFind.searchResults(planData,searchTerm);
 
 
+
                 if(planData.isEmpty()){
 
 
-                    Toast.makeText(this,"No Match Found",Toast.LENGTH_LONG).show();
+                    Toast.makeText(this,"No Match Found\nDid you mean "+rightSpelling+" ?",Toast.LENGTH_LONG).show();
+
                 }
                 else{
+
                     for(planData e : planData)Log.d("pdata",e.getPlanName());
                     updateRecyclerView(planData);
+                    tracker.updateLogFile();
+                    topSearch = tracker.displayTopSearches();
+                    if(!topSearch.isEmpty()) {
+                        searchRV.setVisibility(View.VISIBLE);
+                        searchAdp.updateSuggestions(topSearch);
+                    }
                 }
+
 
 
                 //

@@ -44,7 +44,13 @@
 
 
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
     <!-- Search Bar -->
+
 
     <EditText
         android:id="@+id/search_bar"
