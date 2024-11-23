@@ -1,5 +1,6 @@
 package com.example.pickaplan.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ public class analyticsFragment extends Fragment {
         frecount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 loadFragment(new frequencyCount());
             }
         });

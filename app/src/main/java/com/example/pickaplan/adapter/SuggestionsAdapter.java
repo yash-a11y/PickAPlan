@@ -8,8 +8,10 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pickaplan.R;
+import com.example.pickaplan.dataClass.planData;
 
 import java.util.List;
+
 
 public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.SuggestionsViewHolder> {
 
@@ -51,3 +53,4 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
         }
     }
 }
+
