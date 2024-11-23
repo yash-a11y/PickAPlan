@@ -228,6 +228,8 @@ public class HomeActivity extends AppCompatActivity {
                 String query = searchTab.getText().toString().trim();
                 if (!query.isEmpty()) {
 
+                    tracker.search(query.toString());
+                    tracker.updateLogFile();
                     findKeyword(query,this);
                 }
                 return true;
@@ -247,8 +249,7 @@ public class HomeActivity extends AppCompatActivity {
                     suggestionsRecyclerView.setVisibility(View.GONE); // Hide suggestions RecyclerView
                     suggestionsAdapter.updateSuggestions(new ArrayList<>()); // Clear the suggestions
                 } else {
-                    tracker.search(s.toString());
-                    tracker.updateLogFile();
+
 
                     List<String> suggestions = new ArrayList<>();
                     tree.autocomplete(input, suggestions);
