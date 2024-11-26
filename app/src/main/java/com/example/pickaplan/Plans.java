@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -73,6 +75,8 @@ public class Plans extends AppCompatActivity {
 
     private EditText searchBar;
 
+    private Spinner options;
+
     private TextView notFound;
 
     private SuggestionsAdapter searchAdp;
@@ -87,6 +91,8 @@ public class Plans extends AppCompatActivity {
         setContentView(R.layout.activity_plans);
 
         searchRV = findViewById(R.id.searchRV);
+
+        options = findViewById(R.id.sortSpinner);
 
         notFound = findViewById(R.id.notFound);
         progressBar = findViewById(R.id.progressBar);
@@ -143,6 +149,12 @@ public class Plans extends AppCompatActivity {
         homeNav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                searchBar.setVisibility(View.VISIBLE);
+                searchRV.setVisibility(View.GONE);
+                options.setVisibility(View.GONE);
+
+
                 TextView title = findViewById(R.id.nav_title);
                 if(title.getText() != "Home")
                 {
@@ -162,6 +174,9 @@ public class Plans extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                searchBar.setVisibility(View.GONE);
+                searchRV.setVisibility(View.GONE);
+                options.setVisibility(View.GONE);
                 
                 TextView title = findViewById(R.id.nav_title);
                 if(title.getText() != "Analytics")
@@ -221,13 +236,23 @@ public class Plans extends AppCompatActivity {
             case 3:{
 
 
+                call = apiService.getKoodoPlan();
+                fileName = "Koodo.csv";
+                callApi(call);
+
+
+            }
+            break;
+            case 4:{
+
+
                 call = apiService.getVirginPlans();
                 fileName = "virgin.csv";
                 callApi(call);
 
 
             }
-            break;
+
             default:Log.d("selection_err","error");
         }
 
@@ -398,6 +423,8 @@ public class Plans extends AppCompatActivity {
     //search operation
 
     private void searchOperations() {
+
+
         RecyclerView suggestionsRecyclerView = findViewById(R.id.suggestionsRV);
 
         tree = new AVLTree();
@@ -410,8 +437,8 @@ public class Plans extends AppCompatActivity {
 
         // for search frequency
         searchBar.setOnEditorActionListener((v, actionId, event) -> {
-            String rightSpelling = ""; 
-            
+            String rightSpelling = "";
+
             List<planData> planData = loadDataFromCSV();
             notFound.setVisibility(View.GONE);
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -439,29 +466,28 @@ public class Plans extends AppCompatActivity {
                 //pattern search
                 patternFind patternFind =  new patternFind();
 
+              
+
+                    planData = patternFind.searchResults(planData,searchTerm);
+                    if(planData.isEmpty()){
 
 
-                planData = patternFind.searchResults(planData,searchTerm);
+                        Toast.makeText(this,"No Match Found\nDid you mean "+rightSpelling+" ?",Toast.LENGTH_LONG).show();
 
-
-
-                if(planData.isEmpty()){
-
-
-                    Toast.makeText(this,"No Match Found\nDid you mean "+rightSpelling+" ?",Toast.LENGTH_LONG).show();
-
-                }
-                else{
-
-                    for(planData e : planData)Log.d("pdata",e.getPlanName());
-                    updateRecyclerView(planData);
-                    tracker.updateLogFile();
-                    topSearch = tracker.displayTopSearches();
-                    if(!topSearch.isEmpty()) {
-                        searchRV.setVisibility(View.VISIBLE);
-                        searchAdp.updateSuggestions(topSearch);
                     }
-                }
+                    else{
+
+                        for(planData e : planData)Log.d("pdata",e.getPlanName());
+                        updateRecyclerView(planData);
+                        tracker.updateLogFile();
+                        topSearch = tracker.displayTopSearches();
+                        if(!topSearch.isEmpty()) {
+                            searchRV.setVisibility(View.VISIBLE);
+                            searchAdp.updateSuggestions(topSearch);
+                        }
+                    }
+
+
 
 
 
@@ -500,6 +526,9 @@ public class Plans extends AppCompatActivity {
                         int frequency = Integer.parseInt(parts[1].replace(")", ""));
                         minHeap.insert(word, frequency);
                     }
+
+
+
 
                     List<String> topSuggestions = minHeap.getTopSuggestions();
                     Log.d("top", topSuggestions.toString());

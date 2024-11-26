@@ -71,16 +71,21 @@ public class SpellChecker {
         String rightSpelling = "";
 
 
+
         if (checker.checkSpelling(word)) {// check if the word exists in vocabulary
             Toast.makeText(context.getApplicationContext(),word + " is spelled correctly.",Toast.LENGTH_SHORT).show(); // if yes then it is correct
         } else {
 
             List<hint> hints = checker.suggestAlternatives(word);// checking for possible suggestions
-            for (hint hint : hints) {
-
-                Log.d("spell",hint.word + " (Distance: " + hint.distance + ")"); // printing the words with close match
+            if(hints.isEmpty())
+            {
+                return rightSpelling;
             }
-            rightSpelling  = hints.get(0).word;
+            else {
+
+
+                rightSpelling = hints.get(0).word;
+            }
         }
         return rightSpelling;
     }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:id="@+id/PageRankClick"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/cardcolor"
+    android:layout_marginEnd="5dp"
+    android:padding="3dp"
+    android:layout_marginBottom="15dp"
+    android:minHeight="48dp">
+
+    <TextView
+        android:id="@+id/rankword"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center_vertical"
+        android:textSize="16sp"
+        android:backgroundTint="@color/cardcolor"
+        android:layout_marginEnd="8dp"/>
+
+    <TextView
+        android:id="@+id/freqV"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/item_text_shape"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"/>
+
+</LinearLayout>

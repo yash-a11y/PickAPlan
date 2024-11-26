@@ -26,7 +26,7 @@ public class WordFrequencyAdapter extends RecyclerView.Adapter<WordFrequencyAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate the item layout and create a ViewHolder
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_frequency, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -55,8 +55,8 @@ public class WordFrequencyAdapter extends RecyclerView.Adapter<WordFrequencyAdap
         public ViewHolder(View itemView) {
             super(itemView);
             // Get references to the TextViews
-            wordTextView = itemView.findViewById(R.id.tv_word);
-            frequencyTextView = itemView.findViewById(R.id.tv_freq);
+            wordTextView = itemView.findViewById(R.id.word);
+            frequencyTextView = itemView.findViewById(R.id.freqV);
         }
     }
 }

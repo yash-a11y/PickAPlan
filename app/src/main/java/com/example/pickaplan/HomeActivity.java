@@ -3,7 +3,7 @@ package com.example.pickaplan;
 import static androidx.core.app.PendingIntentCompat.getActivity;
 
 
-
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -25,8 +25,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pickaplan.API.ApiService;
+import com.example.pickaplan.API.RetrofitClient;
+import com.example.pickaplan.adapter.PageRankAdpH;
 import com.example.pickaplan.adapter.SuggestionsAdapter;
 import com.example.pickaplan.adapter.gridAdapter;
+import com.example.pickaplan.adapter.rankAdp;
 import com.example.pickaplan.features.WordCompletion.AVLTree;
 import com.example.pickaplan.features.WordCompletion.MinHeap;
 import com.example.pickaplan.features.SearchFrequencyTracker;
@@ -40,12 +44,17 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class HomeActivity extends AppCompatActivity {
 
     private SearchFrequencyTracker tracker;
     private String logFilePath = "search_log.txt";
     private EditText searchTab;
 
+    private  RecyclerView pagerankRv;
 
 
     // word completion
@@ -76,8 +85,10 @@ public class HomeActivity extends AppCompatActivity {
         LinearLayout homenav = findViewById(R.id.nav_home);
         LinearLayout analyticnav = findViewById(R.id.nav_explore);
         LinearLayout profilenav = findViewById(R.id.nav_account);
-
+         pagerankRv = findViewById(R.id.PagerankRV);
+        pagerankRv.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         tracker = new SearchFrequencyTracker(this);
+
 
         //word completion logic
 
@@ -156,6 +167,9 @@ public class HomeActivity extends AppCompatActivity {
         photouri.add(
                 R.drawable.koodo
         );
+        photouri.add(
+                R.drawable.virgin
+        );
 
 
 
@@ -211,6 +225,22 @@ public class HomeActivity extends AppCompatActivity {
             }
         }).start();
 
+
+        searchTab.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String query = searchTab.getText().toString().trim();
+                if (!query.isEmpty()) {
+
+                    tracker.search(query.toString());
+                    tracker.updateLogFile();
+                    findKeyword(query,this);
+                }
+                return true;
+            }
+            return false;
+        });
+
+
         searchTab.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -222,8 +252,7 @@ public class HomeActivity extends AppCompatActivity {
                     suggestionsRecyclerView.setVisibility(View.GONE); // Hide suggestions RecyclerView
                     suggestionsAdapter.updateSuggestions(new ArrayList<>()); // Clear the suggestions
                 } else {
-                    tracker.search(s.toString());
-                    tracker.updateLogFile();
+
 
                     List<String> suggestions = new ArrayList<>();
                     tree.autocomplete(input, suggestions);
@@ -283,5 +312,43 @@ public class HomeActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void findKeyword(String query, Context context) {
+
+        ApiService apiService = RetrofitClient.getApiService();
+        Call<List<String>> call = apiService.getRanking(query);
+        call.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> linksCall, Response<List<String>> response) {
+                // Handle successful response
+                if(response.isSuccessful() && response.body() != null)
+                {
+                    pagerankRv.setVisibility(View.VISIBLE);
+                    List<String> rankingLinks = response.body();
+                    for(String eachRank : rankingLinks)
+                    {
+                        Log.d("rank", eachRank);
+                    }
+
+                    PageRankAdpH rankAdapter = new PageRankAdpH(rankingLinks);
+
+
+                    pagerankRv.setAdapter(rankAdapter);
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> linkCall, Throwable t) {
+                // Handle failure
+                pagerankRv.setVisibility(View.GONE);
+                Log.d("fail",t.getMessage());
+
+            }
+        });
+
+
     }
 }

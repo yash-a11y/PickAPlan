@@ -29,6 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
         >
@@ -38,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Frequency Count"
-            android:textColor="@color/primaryAccent"
+            android:textColor="@color/white"
             app:chipBackgroundColor="@color/cardcolor2" />
 
         <com.google.android.material.chip.Chip
@@ -71,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Inverted Index"
-            android:textColor="@color/primaryAccent"
+            android:textColor="@color/white"
             app:chipBackgroundColor="@color/cardcolor2" />
     </LinearLayout>
 
