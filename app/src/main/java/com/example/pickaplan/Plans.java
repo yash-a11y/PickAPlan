@@ -424,8 +424,7 @@ public class Plans extends AppCompatActivity {
 
     private void searchOperations() {
 
-        final List<String>[] suggestions = new List[]{null};
-        final boolean[] flag = {false};
+
         RecyclerView suggestionsRecyclerView = findViewById(R.id.suggestionsRV);
 
         tree = new AVLTree();
@@ -467,13 +466,7 @@ public class Plans extends AppCompatActivity {
                 //pattern search
                 patternFind patternFind =  new patternFind();
 
-                if(flag[0])
-                {
-
-                    Toast.makeText(this,"No Match Found\nDid you mean "+rightSpelling+" ?",Toast.LENGTH_LONG).show();
-
-                }
-                else{
+              
 
                     planData = patternFind.searchResults(planData,searchTerm);
                     if(planData.isEmpty()){
@@ -494,7 +487,7 @@ public class Plans extends AppCompatActivity {
                         }
                     }
 
-                }
+
 
 
 
@@ -535,9 +528,7 @@ public class Plans extends AppCompatActivity {
                     }
 
 
-                    if(suggestions.isEmpty()){
-                        flag[0] = true;
-                    }
+
 
                     List<String> topSuggestions = minHeap.getTopSuggestions();
                     Log.d("top", topSuggestions.toString());
