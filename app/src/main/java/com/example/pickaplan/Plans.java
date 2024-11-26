@@ -160,6 +160,8 @@ public class Plans extends AppCompatActivity {
                 {
                     title.setText("Home");
                 }
+
+
                 ImageView homeIMG = findViewById(R.id.homeimg);
                 homeIMG.setImageResource(R.drawable.green_home);
                 ImageView analysisIMG = findViewById(R.id.analysisimg);
@@ -466,7 +468,7 @@ public class Plans extends AppCompatActivity {
                 //pattern search
                 patternFind patternFind =  new patternFind();
 
-              
+
 
                     planData = patternFind.searchResults(planData,searchTerm);
                     if(planData.isEmpty()){

@@ -60,11 +60,11 @@ public class PageRankAdpH extends RecyclerView.Adapter<PageRankAdpH.searchVH> {
         {
             holder.searchWord.setText("fido");
         }
-        else if(contents[0] == links[1])
+        else if(contents[0].contains(links[1]))
         {
             holder.searchWord.setText("rogers");
         }
-        else if(contents[0] == links[2])
+        else if(contents[0].contains(links[2]))
         {
             holder.searchWord.setText("virgin");
         }

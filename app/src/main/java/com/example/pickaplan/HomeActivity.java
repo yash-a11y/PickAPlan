@@ -118,6 +118,7 @@ public class HomeActivity extends AppCompatActivity {
                     title.setText("Analytics");
                 }
 
+                pagerankRv.setVisibility(View.GONE);
                 searchTab.setVisibility(View.GONE);
                 ImageView homeIMG = findViewById(R.id.homeimg);
                 homeIMG.setImageResource(R.drawable.home);
@@ -136,6 +137,8 @@ public class HomeActivity extends AppCompatActivity {
                 {
                     title.setText("Home");
                 }
+
+                pagerankRv.setVisibility(View.VISIBLE);
                 searchTab.setVisibility(View.VISIBLE);
                 ImageView homeIMG = findViewById(R.id.homeimg);
                 homeIMG.setImageResource(R.drawable.green_home);
