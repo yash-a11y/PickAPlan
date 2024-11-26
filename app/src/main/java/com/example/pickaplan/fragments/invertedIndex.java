@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,6 +33,8 @@ public class invertedIndex extends Fragment {
     private invertedIndexing InvertedIndexing;
 
     private invertedIndexAdapter adapter;
+
+    private LinearLayout noDataTV;
     private EditText searchinverted;
     private RecyclerView invertedView;
 
@@ -40,6 +44,7 @@ public class invertedIndex extends Fragment {
 
         searchinverted = view.findViewById(R.id.search_bar_inverted);
         invertedView = view.findViewById(R.id.rvinverdindex);
+        noDataTV = view.findViewById(R.id.noDataFound);
 
         invertedView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -76,10 +81,23 @@ public class invertedIndex extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                     String query = v.getText().toString().trim();
                     if (!query.isEmpty()) {
+                        noDataTV.setVisibility(View.GONE);
                         List<String> results = invertedIndexing.searchWord(query);
-                        adapter.updateResults(results); // Update the adapter with search results
-                    } else {
+                        if(results.isEmpty())
+                        {
+                            noDataTV.setVisibility(View.VISIBLE);
+                            Toast.makeText(view.getContext(), "No data found !", Toast.LENGTH_SHORT).show();
+
+                        }else{
+                            adapter.updateResults(results); // Update the adapter with search results
+
+                        }
+
+                        }
+                    else {
                         adapter.updateResults(null); // Clear results
+                        noDataTV.setVisibility(View.VISIBLE);
+                        Toast.makeText(view.getContext(), "No data found !", Toast.LENGTH_SHORT).show();
                     }
                     return true; // Return true to consume the event
                 }

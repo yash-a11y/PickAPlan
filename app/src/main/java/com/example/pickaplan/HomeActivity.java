@@ -167,6 +167,9 @@ public class HomeActivity extends AppCompatActivity {
         photouri.add(
                 R.drawable.koodo
         );
+        photouri.add(
+                R.drawable.virgin
+        );
 
 
 

@@ -1,5 +1,6 @@
 package com.example.pickaplan.fragments;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,10 +24,22 @@ public class analyticsFragment extends Fragment {
 
         Chip pageRank = view.findViewById(R.id.chip_page_ranking);
         Chip searchFreq = view.findViewById(R.id.chip_search_freq);
+        Chip frecount = view.findViewById(R.id.chip_frequency_count);
+        Chip invertedIndexchip = view.findViewById(R.id.chip_invertedIndex);
+
+
+        loadFragment(new searchFreq());
 
         searchFreq.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
+                searchFreq.setTextColor(ContextCompat.getColor(view.getContext(),R.color.primaryAccent));
+                pageRank.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
+                frecount.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
+                invertedIndexchip.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
+
                 loadFragment(new searchFreq());
             }
         });
@@ -35,27 +48,38 @@ public class analyticsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                pageRank.setTextColor(ContextCompat.getColor(view.getContext(), R.color.primaryAccent));
+
+                searchFreq.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
+                pageRank.setTextColor(ContextCompat.getColor(view.getContext(),R.color.primaryAccent));
+                frecount.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
+                invertedIndexchip.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
                 loadFragment(new pageRanking());
             }
         });
 
 
-        Chip frecount = view.findViewById(R.id.chip_frequency_count);
+
 
         frecount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                searchFreq.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
+                pageRank.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
+                frecount.setTextColor(ContextCompat.getColor(view.getContext(),R.color.primaryAccent));
+                invertedIndexchip.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
                 loadFragment(new frequencyCount());
             }
         });
 
-        Chip invertedIndexchip = view.findViewById(R.id.chip_invertedIndex);
 
         invertedIndexchip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                searchFreq.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
+                pageRank.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
+                frecount.setTextColor(ContextCompat.getColor(view.getContext(),R.color.white));
+                invertedIndexchip.setTextColor(ContextCompat.getColor(view.getContext(),R.color.primaryAccent));
                 loadFragment(new invertedIndex());
             }
         });

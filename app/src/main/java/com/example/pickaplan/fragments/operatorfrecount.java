@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -28,6 +29,7 @@ public class operatorfrecount extends Fragment {
 
     private  String file;
 
+    private LinearLayout noData;
     public operatorfrecount(String file){
         this.file=file;
 
@@ -44,6 +46,7 @@ public class operatorfrecount extends Fragment {
         // Initialize RecyclerView
         recyclerView = view.findViewById(R.id.rv_fredata);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        noData = view.findViewById(R.id.noScraped);
 
         WordFrequencyCounter counter = new WordFrequencyCounter();
         counter.parseFile(this.getContext(), file);
@@ -53,9 +56,18 @@ public class operatorfrecount extends Fragment {
 //        adapter = new WordFrequencyAdapter(sortedWords);
 //        recyclerView.setAdapter(adapter);
 
+
         List<Map.Entry<String, Integer>> sortedWords = counter.getSortedWordFrequencies();
-        WordFrequencyAdapter adapter = new WordFrequencyAdapter(sortedWords);
-        recyclerView.setAdapter(adapter);
+        if (sortedWords.isEmpty()){
+            noData.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else {
+            recyclerView.setVisibility(View.VISIBLE);
+            noData.setVisibility(View.GONE);
+            WordFrequencyAdapter adapter = new WordFrequencyAdapter(sortedWords);
+            recyclerView.setAdapter(adapter);
+        }
 
         return view;
     }

@@ -25,4 +25,7 @@ public interface ApiService {
 
     @GET("telusplans")
     Call<List<planData>> getTelusPlan();
+
+    @GET("koodoplans")
+    Call<List<planData>> getKoodoPlan();
 }

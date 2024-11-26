@@ -39,6 +39,9 @@ public class BrandActivity extends Fragment {
         photouri.add(
                 R.drawable.koodo
         );
+        photouri.add(
+                R.drawable.virgin
+        );
 
 
 

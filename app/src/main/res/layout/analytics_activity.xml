@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Frequency Count"
-            android:textColor="@color/primaryAccent"
+            android:textColor="@color/white"
             app:chipBackgroundColor="@color/cardcolor2" />
 
         <com.google.android.material.chip.Chip
