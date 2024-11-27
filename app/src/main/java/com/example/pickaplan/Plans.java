@@ -92,7 +92,7 @@ public class Plans extends AppCompatActivity {
 
         searchRV = findViewById(R.id.searchRV);
 
-        options = findViewById(R.id.sortSpinner);
+
 
         notFound = findViewById(R.id.notFound);
         progressBar = findViewById(R.id.progressBar);
