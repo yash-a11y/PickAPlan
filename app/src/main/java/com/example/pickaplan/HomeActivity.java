@@ -18,7 +18,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -56,6 +58,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private  RecyclerView pagerankRv;
 
+    private ProgressBar Hprogress;
+    RecyclerView suggestionsRecyclerView;
+
 
     // word completion
 
@@ -80,12 +85,17 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstantState);
         setContentView(R.layout.home_activity);
 
+
+        loadFragment(new BrandActivity());
+
         searchTab = findViewById(R.id.search_bar);
         ImageView back_button = findViewById(R.id.back_button);
         LinearLayout homenav = findViewById(R.id.nav_home);
+        Hprogress = findViewById(R.id.HprogressBar);
         LinearLayout analyticnav = findViewById(R.id.nav_explore);
         LinearLayout profilenav = findViewById(R.id.nav_account);
-         pagerankRv = findViewById(R.id.PagerankRV);
+        suggestionsRecyclerView = findViewById(R.id.suggestionsRecyclerView);
+        pagerankRv = findViewById(R.id.PagerankRV);
         pagerankRv.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         tracker = new SearchFrequencyTracker(this);
 
@@ -118,8 +128,11 @@ public class HomeActivity extends AppCompatActivity {
                     title.setText("Analytics");
                 }
 
-                pagerankRv.setVisibility(View.GONE);
-                searchTab.setVisibility(View.GONE);
+                hideViewWithAnimation(Hprogress);
+                hideViewWithAnimation(pagerankRv);
+                hideViewWithAnimation(searchTab);
+                hideViewWithAnimation(suggestionsRecyclerView);
+
                 ImageView homeIMG = findViewById(R.id.homeimg);
                 homeIMG.setImageResource(R.drawable.home);
                 ImageView analysisIMG = findViewById(R.id.analysisimg);
@@ -138,8 +151,13 @@ public class HomeActivity extends AppCompatActivity {
                     title.setText("Home");
                 }
 
-                pagerankRv.setVisibility(View.VISIBLE);
-                searchTab.setVisibility(View.VISIBLE);
+
+
+                showViewWithAnimation(Hprogress);
+                showViewWithAnimation(pagerankRv);
+                showViewWithAnimation(searchTab);
+                showViewWithAnimation(suggestionsRecyclerView);
+
                 ImageView homeIMG = findViewById(R.id.homeimg);
                 homeIMG.setImageResource(R.drawable.green_home);
                 ImageView analysisIMG = findViewById(R.id.analysisimg);
@@ -157,32 +175,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        List<Integer>  photouri = new ArrayList<>();
-        photouri.add(
-                R.drawable.fido
-        );
-        photouri.add(
-                R.drawable.rogers
-        );
-        photouri.add(
-                R.drawable.telus
-        );
-        photouri.add(
-                R.drawable.koodo
-        );
-        photouri.add(
-                R.drawable.virgin
-        );
-
-
-
-
-
-        GridView gridView = findViewById(R.id.grid_view);
-
-        gridAdapter adapter = new gridAdapter(this,photouri);
-
-        gridView.setAdapter(adapter);
 
 
     }
@@ -193,7 +185,13 @@ public class HomeActivity extends AppCompatActivity {
         {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container,fragment)
+                    .setCustomAnimations(
+                            android.R.anim.fade_in,    // Enter animation
+                            android.R.anim.fade_out,   // Exit animation
+                            android.R.anim.fade_in,    // Pop enter animation (back stack)
+                            android.R.anim.fade_out    // Pop exit animation (back stack)
+                    )
+                    .replace(R.id.fragment_container_home,fragment)
                     .commit();
         }
     }
@@ -202,31 +200,16 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void searchOperations() {
-        RecyclerView suggestionsRecyclerView = findViewById(R.id.suggestionsRecyclerView);
+
         AssetManager assetManager = getAssets();
         tree = new AVLTree();
-
+        pagerankRv.setVisibility(View.VISIBLE);
         // Set up RecyclerView with LinearLayoutManager
         suggestionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         SuggestionsAdapter suggestionsAdapter = new SuggestionsAdapter(new ArrayList<>());
         suggestionsRecyclerView.setAdapter(suggestionsAdapter);
 
-        // Load CSV data in a background thread
-        new Thread(() -> {
-            try {
-                String[] files = assetManager.list("");
 
-                if (files != null) {
-                    for (String fileName : files) {
-                        if (fileName.endsWith(".csv")) {
-                            buildTree(fileName, tree);
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
 
 
         searchTab.setOnEditorActionListener((v, actionId, event) -> {
@@ -237,59 +220,80 @@ public class HomeActivity extends AppCompatActivity {
                     tracker.search(query.toString());
                     tracker.updateLogFile();
                     findKeyword(query,this);
+
+                    searchTab.setText("");
                 }
                 return true;
+
+
             }
             return false;
-        });
 
+        });
 
         searchTab.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String input = s.toString().toLowerCase();
-                if (input.isEmpty()) {
-                    suggestionsRecyclerView.setVisibility(View.GONE); // Hide suggestions RecyclerView
-                    suggestionsAdapter.updateSuggestions(new ArrayList<>()); // Clear the suggestions
-                } else {
-
-
-                    List<String> suggestions = new ArrayList<>();
-                    tree.autocomplete(input, suggestions);
-
-                    // Sort and limit suggestions using MinHeap
-                    MinHeap minHeap = new MinHeap(10);  // Show top 10 suggestions
-                    for (String suggestion : suggestions) {
-                        String[] parts = suggestion.split(" \\(");
-                        String word = parts[0];
-                        int frequency = Integer.parseInt(parts[1].replace(")", ""));
-                        minHeap.insert(word, frequency);
-                    }
-
-                    List<String> topSuggestions = minHeap.getTopSuggestions();
-                    Log.d("top", topSuggestions.toString());
-
-                    // Update the adapter with the new suggestions
-                    suggestionsAdapter.updateSuggestions(topSuggestions);
-
-                    // Make the RecyclerView visible if it has suggestions
-                    if (!topSuggestions.isEmpty()) {
-                        suggestionsRecyclerView.setVisibility(View.VISIBLE);
-                    } else {
-                        suggestionsRecyclerView.setVisibility(View.GONE); // Hide if no suggestions
-                    }
-                }
+                pagerankRv.setVisibility(View.GONE);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
 
             }
-
         });
+
+//        searchTab.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                String input = s.toString().toLowerCase();
+//                if (input.isEmpty()) {
+//                    suggestionsRecyclerView.setVisibility(View.GONE); // Hide suggestions RecyclerView
+//                    suggestionsAdapter.updateSuggestions(new ArrayList<>()); // Clear the suggestions
+//                } else {
+//
+//
+//                    List<String> suggestions = new ArrayList<>();
+//                    tree.autocomplete(input, suggestions);
+//
+//                    // Sort and limit suggestions using MinHeap
+//                    MinHeap minHeap = new MinHeap(10);  // Show top 10 suggestions
+//                    for (String suggestion : suggestions) {
+//                        String[] parts = suggestion.split(" \\(");
+//                        String word = parts[0];
+//                        int frequency = Integer.parseInt(parts[1].replace(")", ""));
+//                        minHeap.insert(word, frequency);
+//                    }
+//
+//                    List<String> topSuggestions = minHeap.getTopSuggestions();
+//                    Log.d("top", topSuggestions.toString());
+//
+//                    // Update the adapter with the new suggestions
+//                    suggestionsAdapter.updateSuggestions(topSuggestions);
+//
+//                    // Make the RecyclerView visible if it has suggestions
+//                    if (!topSuggestions.isEmpty()) {
+//                        suggestionsRecyclerView.setVisibility(View.VISIBLE);
+//                    } else {
+//                        suggestionsRecyclerView.setVisibility(View.GONE); // Hide if no suggestions
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//
+//        });
     }
 
 
@@ -318,40 +322,65 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void findKeyword(String query, Context context) {
+        // Show the ProgressBar
+        Hprogress.setVisibility(View.VISIBLE);
+        pagerankRv.setVisibility(View.GONE);
 
         ApiService apiService = RetrofitClient.getApiService();
         Call<List<String>> call = apiService.getRanking(query);
         call.enqueue(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> linksCall, Response<List<String>> response) {
-                // Handle successful response
-                if(response.isSuccessful() && response.body() != null)
-                {
+                // Hide the ProgressBar
+                Hprogress.setVisibility(View.GONE);
+
+                if (response.isSuccessful() && response.body() != null) {
                     pagerankRv.setVisibility(View.VISIBLE);
                     List<String> rankingLinks = response.body();
-                    for(String eachRank : rankingLinks)
-                    {
+                    for (String eachRank : rankingLinks) {
                         Log.d("rank", eachRank);
                     }
 
                     PageRankAdpH rankAdapter = new PageRankAdpH(rankingLinks);
-
-
                     pagerankRv.setAdapter(rankAdapter);
-
-
+                } else {
+                    // Handle unsuccessful response
+                    showErrorMessage("Failed to fetch data");
                 }
             }
 
             @Override
             public void onFailure(Call<List<String>> linkCall, Throwable t) {
-                // Handle failure
+                // Hide the ProgressBar
+                Hprogress.setVisibility(View.GONE);
                 pagerankRv.setVisibility(View.GONE);
-                Log.d("fail",t.getMessage());
-
+                showErrorMessage("Network error: " + t.getMessage());
+                Log.d("fail", t.getMessage());
             }
         });
-
-
     }
+
+    private void showErrorMessage(String message) {
+        // Implement this method to show an error message to the user
+        // For example, you could use a Toast or a TextView
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void hideViewWithAnimation(View view) {
+        view.animate()
+                .alpha(0f) // Fade out
+                .setDuration(300) // Duration in ms
+                .withEndAction(() -> view.setVisibility(View.GONE)) // Set GONE after animation
+                .start();
+    }
+
+    private void showViewWithAnimation(View view) {
+        view.setVisibility(View.VISIBLE); // Make visible first
+        view.setAlpha(0f); // Initially invisible
+        view.animate()
+                .alpha(1f) // Fade in
+                .setDuration(300) // Duration in ms
+                .start();
+    }
+
 }

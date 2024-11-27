@@ -66,20 +66,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
         >
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_invertedIndex"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:text="Inverted Index"
             android:textColor="@color/white"
             app:chipBackgroundColor="@color/cardcolor2" />
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/fragment_container_an"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent"
+        />
 </LinearLayout>

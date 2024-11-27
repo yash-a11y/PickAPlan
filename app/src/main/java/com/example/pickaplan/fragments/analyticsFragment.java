@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.pickaplan.R;
 import com.google.android.material.chip.Chip;
@@ -90,12 +91,12 @@ public class analyticsFragment extends Fragment {
 
 
     private void loadFragment(Fragment fragment) {
-        if(fragment != null)
-        {
+        if(fragment != null) {
+            getChildFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container,fragment)
+                    .replace(R.id.fragment_container_an, fragment)
+                    .addToBackStack(null)
                     .commit();
         }
     }
-
 }

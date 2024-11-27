@@ -27,7 +27,7 @@ public class SpellChecker {
         sorter = new MergeSortSuggestions();// sorting the suggestions based on their edit distance
          this.planData = planData;
         for (String word : vocabulary.getWords()) {
-            hashTable.insert(word);// inserting the vocab in hashtable
+            hashTable.insert(word.toLowerCase());// inserting the vocab in hashtable
         }
     }
 

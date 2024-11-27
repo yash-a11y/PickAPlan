@@ -81,6 +81,8 @@ public class Plans extends AppCompatActivity {
 
     private SuggestionsAdapter searchAdp;
 
+    private String  topsrch = "";
+
 
     private   plansAdapter adpater;
     @Override
@@ -150,24 +152,29 @@ public class Plans extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                searchBar.setVisibility(View.VISIBLE);
-                searchRV.setVisibility(View.GONE);
-                options.setVisibility(View.GONE);
 
 
-                TextView title = findViewById(R.id.nav_title);
-                if(title.getText() != "Home")
-                {
-                    title.setText("Home");
-                }
+//                showViewWithAnimation(searchBar);
+//                hideViewWithAnimation(searchRV);
+//
+//
+//
+////                options.setVisibility(View.GONE);
+//
+
+//                TextView title = findViewById(R.id.nav_title);
+//                if(title.getText() != "Home")
+//                {
+//                    title.setText("Home");
+//                }
 
 
                 ImageView homeIMG = findViewById(R.id.homeimg);
                 homeIMG.setImageResource(R.drawable.green_home);
                 ImageView analysisIMG = findViewById(R.id.analysisimg);
                 analysisIMG.setImageResource(R.drawable.analytics);
-
-                loadFragment(new BrandActivity());
+                onBackPressed();
+//                loadFragment(new BrandActivity());
             }
         });
 
@@ -176,9 +183,13 @@ public class Plans extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                searchBar.setVisibility(View.GONE);
-                searchRV.setVisibility(View.GONE);
-                options.setVisibility(View.GONE);
+//                searchBar.setVisibility(View.GONE);
+//                searchRV.setVisibility(View.GONE);
+
+                hideViewWithAnimation(searchRV);
+                hideViewWithAnimation(searchBar);
+
+//                options.setVisibility(View.GONE);
                 
                 TextView title = findViewById(R.id.nav_title);
                 if(title.getText() != "Analytics")
@@ -266,7 +277,13 @@ public class Plans extends AppCompatActivity {
     private void loadFragment(Fragment fragment)
     {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container,fragment)
+                .setCustomAnimations(
+                        android.R.anim.fade_in,    // Enter animation
+                        android.R.anim.fade_out,   // Exit animation
+                        android.R.anim.fade_in,    // Pop enter animation (back stack)
+                        android.R.anim.fade_out    // Pop exit animation (back stack)
+                )
+                .replace(R.id.fragment_container_plan,fragment)
                 .commit();
     }
 
@@ -450,7 +467,7 @@ public class Plans extends AppCompatActivity {
 
                     try {
                         spellChecker = new SpellChecker(planData);
-                        rightSpelling =  spellChecker.spellcheck(this,searchTerm);
+                        rightSpelling =  spellChecker.spellcheck(this,searchTerm.toLowerCase());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -468,13 +485,20 @@ public class Plans extends AppCompatActivity {
                 //pattern search
                 patternFind patternFind =  new patternFind();
 
-
-
                     planData = patternFind.searchResults(planData,searchTerm);
-                    if(planData.isEmpty()){
+                    if(planData.isEmpty() | topsrch == ""){
+
+                        if (rightSpelling.isEmpty())
+                        {
+                            Toast.makeText(this,"No Match Found\nWhat do you mean?",Toast.LENGTH_LONG).show();
+
+                        }
+                        else {
+                            Toast.makeText(this,"No Match Found\nDo you mean "+rightSpelling+" ?",Toast.LENGTH_LONG).show();
+
+                        }
 
 
-                        Toast.makeText(this,"No Match Found\nDid you mean "+rightSpelling+" ?",Toast.LENGTH_LONG).show();
 
                     }
                     else{
@@ -541,6 +565,7 @@ public class Plans extends AppCompatActivity {
                     // Make the RecyclerView visible if it has suggestions
                     if (!topSuggestions.isEmpty()) {
                         suggestionsRecyclerView.setVisibility(View.VISIBLE);
+                        topsrch = topSuggestions.get(0);
                     } else {
                         suggestionsRecyclerView.setVisibility(View.GONE); // Hide if no suggestions
                     }
@@ -570,6 +595,23 @@ public class Plans extends AppCompatActivity {
         }
     }
 
+
+    private void hideViewWithAnimation(View view) {
+        view.animate()
+                .alpha(0f) // Fade out
+                .setDuration(300) // Duration in ms
+                .withEndAction(() -> view.setVisibility(View.GONE)) // Set GONE after animation
+                .start();
+    }
+
+    private void showViewWithAnimation(View view) {
+        view.setVisibility(View.VISIBLE); // Make visible first
+        view.setAlpha(0f); // Initially invisible
+        view.animate()
+                .alpha(1f) // Fade in
+                .setDuration(300) // Duration in ms
+                .start();
+    }
 
     //
 }
