@@ -102,7 +102,7 @@ public class signUp extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user.isEmailVerified()) {
-            startActivity(new Intent(this, HomeActivity.class));
+            startActivity(new Intent(signUp.this, HomeActivity.class));
             finish();
         } else {
             user.sendEmailVerification();

@@ -27,8 +27,7 @@ public class splashActivity extends AppCompatActivity {
 
         // Check user authentication after splash animation
         new Handler().postDelayed(() -> {
-                Intent intent = new Intent(splashActivity.this, signUp.class);
-                startActivity(intent);
+            startActivity(new Intent(this, signUp.class));
             finish(); // Close splash activity
         }, 6000); // Wait for 6 seconds before transitioning
     }

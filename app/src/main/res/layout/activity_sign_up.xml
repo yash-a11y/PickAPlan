@@ -44,11 +44,10 @@
         android:textColorHint="#AAAAAA"
         android:textColor="#FFFFFF"
         android:background="@drawable/round_corner"
-        />
-    <!-- Password EditText -->
+        android:autofillHints="username" />
+
     <EditText
         android:id="@+id/passwordEditText"
-        android:importantForAutofill="no"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/usernameEditText"
@@ -59,7 +58,9 @@
         android:textColorHint="#AAAAAA"
         android:textColor="#FFFFFF"
         android:background="@drawable/round_corner"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:autofillHints="password" />
+
 
     <!-- Forgot Password Text -->
     <TextView
