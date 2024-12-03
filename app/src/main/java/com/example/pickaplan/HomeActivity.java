@@ -5,6 +5,7 @@ import static androidx.core.app.PendingIntentCompat.getActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -85,6 +86,15 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstantState);
         setContentView(R.layout.home_activity);
 
+        // Check if user is valid
+        if (!isUserValid()) {
+            // Redirect to SignUpActivity if the user is not valid
+            Intent intent = new Intent(HomeActivity.this, signUp.class);
+            startActivity(intent);
+            finish();  // Finish the current activity to prevent the user from returning to it
+            return;  // Ensure the rest of onCreate doesn't run
+        }
+
 
         loadFragment(new BrandActivity());
 
@@ -153,7 +163,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-                showViewWithAnimation(Hprogress);
+                //showViewWithAnimation(Hprogress);
                 showViewWithAnimation(pagerankRv);
                 showViewWithAnimation(searchTab);
                 showViewWithAnimation(suggestionsRecyclerView);
@@ -175,8 +185,14 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+    }
 
-
+    // Method to check if the user is valid (You can adapt this method as per your user session management)
+    private boolean isUserValid() {
+        SharedPreferences preferences = getSharedPreferences("user_session", MODE_PRIVATE);
+        // Replace "user_token" with the actual key you use to store the session token or login status
+        String userToken = preferences.getString("user_token", null);
+        return userToken != null;  // Check if the user is logged in by verifying the token
     }
 
 

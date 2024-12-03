@@ -463,11 +463,13 @@ public class Plans extends AppCompatActivity {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String searchTerm = searchBar.getText().toString().trim();
                 if (!searchTerm.isEmpty()) {
-                    tracker.search(searchTerm);
+
 
                     try {
                         spellChecker = new SpellChecker(planData);
                         rightSpelling =  spellChecker.spellcheck(this,searchTerm.toLowerCase());
+                        tracker.search(searchTerm);
+                        tracker.updateLogFile();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
