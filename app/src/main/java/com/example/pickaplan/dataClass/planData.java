@@ -30,4 +30,10 @@ public class planData {
     public String getDetails() {
         return details;
     }
+
+    public double getPriceAsDouble() {
+        // Remove any non-numeric characters (assuming price is in format like "$49.99")
+        String numericPrice = planprice.replaceAll("[^\\d.]", "");
+        return Double.parseDouble(numericPrice);
+    }
 }

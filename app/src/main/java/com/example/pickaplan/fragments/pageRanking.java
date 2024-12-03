@@ -61,10 +61,14 @@ public class pageRanking  extends Fragment {
         return view;
     }
 
+
+    // page ranking using api call
     private void findKeyword(String query, Context context) {
 
         ApiService apiService = RetrofitClient.getApiService();
         Call<List<String>> call = apiService.getRanking(query);
+
+        // exception handling
         call.enqueue(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> linksCall, Response<List<String>> response) {

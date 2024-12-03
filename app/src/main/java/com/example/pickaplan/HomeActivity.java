@@ -153,7 +153,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-                showViewWithAnimation(Hprogress);
+
                 showViewWithAnimation(pagerankRv);
                 showViewWithAnimation(searchTab);
                 showViewWithAnimation(suggestionsRecyclerView);
@@ -321,6 +321,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    //page ranking
     private void findKeyword(String query, Context context) {
         // Show the ProgressBar
         Hprogress.setVisibility(View.VISIBLE);
@@ -328,6 +329,8 @@ public class HomeActivity extends AppCompatActivity {
 
         ApiService apiService = RetrofitClient.getApiService();
         Call<List<String>> call = apiService.getRanking(query);
+
+        //exception handling
         call.enqueue(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> linksCall, Response<List<String>> response) {

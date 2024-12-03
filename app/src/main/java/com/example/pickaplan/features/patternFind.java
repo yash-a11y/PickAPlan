@@ -14,6 +14,8 @@ public class patternFind {
 
     public static List<planData> searchResults(List<planData> planData, String searchPattern) {
         List<planData> results = new ArrayList<>();
+
+        //pattern finding done through regex
         Pattern pattern = Pattern.compile(searchPattern, Pattern.CASE_INSENSITIVE);
 
 
