@@ -1,7 +1,6 @@
 package com.example.pickaplan;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -11,13 +10,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -25,23 +21,31 @@ public class Register extends AppCompatActivity {
 
     private EditText etUserName, etEmail, etPassword, etConfirmPassword, etPhoneNumber;
     private Button btnRegister;
-    private  TextView goToHome;
+    private TextView goToHome, goToSignIn;
 
     private FirebaseAuth mAuth; // Firebase Authentication instance
     private DatabaseReference databaseReference; // Firebase Realtime Database reference
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            updateUI(user);
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
-
 
         // Initialize Firebase Auth and Database Reference
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("Users");
 
-
-
+        // Initialize Views
         etUserName = findViewById(R.id.usernameEditText);
         etEmail = findViewById(R.id.EmailEditText);
         etPassword = findViewById(R.id.passwordEditText);
@@ -49,44 +53,29 @@ public class Register extends AppCompatActivity {
         etPhoneNumber = findViewById(R.id.PhonenumberEditText);
         btnRegister = findViewById(R.id.registerButton);
         goToHome = findViewById(R.id.HomeText);
+        //goToSignIn = findViewById(R.id.goToSignIn);
 
-//        // Navigate to HomeActivity if the user is already registered (check SharedPreferences)
-//        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-//        if (sharedPreferences.getBoolean("isRegistered", false)) {
-//            Intent intent = new Intent(Register.this, signUp.class);
-//            startActivity(intent);
-//            finish();
-//        }
+        // If the user is already logged in, navigate to the HomeActivity
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // If user is already authenticated, navigate to HomeActivity
+            Intent intent = new Intent(Register.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
-        goToHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Register.this, signUp.class);
-                startActivity(intent);
-            }
+        // On "Go to Sign In" link click, navigate to SignIn activity
+        goToHome.setOnClickListener(view -> {
+            Intent intent = new Intent(Register.this, signUp.class);
+            startActivity(intent);
         });
 
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateInputs()) {
-                    // Save registration status in SharedPreferences
-                    SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("isRegistered", true);
-                    editor.apply(); // Save changes asynchronously
-
-                    // Show success message
-                    Toast.makeText(Register.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
-
-                    // Navigate to HomeActivity
-                    Intent intent = new Intent(Register.this, HomeActivity.class);
-                    startActivity(intent);
-                    finish(); // Close the Register activity
-                }
+        // On Register button click, create a new user
+        btnRegister.setOnClickListener(v -> {
+            if (validateInputs()) {
+                registerUser(); // Call Firebase Register method
             }
         });
-
     }
 
     private void registerUser() {
@@ -100,17 +89,26 @@ public class Register extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // Get the Firebase User ID
-                        String userId = mAuth.getCurrentUser().getUid();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        String userId = user.getUid();
 
                         // Save user details in Firebase Realtime Database
-                        User user = new User(username, email, phoneNumber);
-                        databaseReference.child(userId).setValue(user)
+                        User userDetails = new User(username, email, phoneNumber);
+                        databaseReference.child(userId).setValue(userDetails)
                                 .addOnCompleteListener(dbTask -> {
                                     if (dbTask.isSuccessful()) {
-                                        Toast.makeText(Register.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(Register.this, HomeActivity.class);
-                                        startActivity(intent);
-                                        finish();
+                                        // Send email verification
+                                        user.sendEmailVerification()
+                                                .addOnCompleteListener(verificationTask -> {
+                                                    if (verificationTask.isSuccessful()) {
+                                                        Toast.makeText(Register.this, "Registration Successful! Verification email sent.", Toast.LENGTH_LONG).show();
+                                                        Intent intent = new Intent(Register.this, signUp.class); // Go to Sign In after registration
+                                                        startActivity(intent);
+                                                        finish();
+                                                    } else {
+                                                        Toast.makeText(Register.this, "Failed to send verification email", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
                                     } else {
                                         Toast.makeText(Register.this, "Failed to save user data: " + dbTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
@@ -122,7 +120,6 @@ public class Register extends AppCompatActivity {
     }
 
     private boolean validateInputs() {
-
         // Username regex pattern
         String usernamePattern = "^[a-zA-Z0-9_]{3,15}$";
 
@@ -152,7 +149,7 @@ public class Register extends AppCompatActivity {
         // Validate password
         if (TextUtils.isEmpty(etPassword.getText().toString().trim()) ||
                 !etPassword.getText().toString().trim().matches(passwordPattern)) {
-            etPassword.setError("Password must be at least 8 characters long and contain uppercase,lowercase,digit, and special character.");
+            etPassword.setError("Password must be at least 8 characters long and contain uppercase, lowercase, digits, and special characters.");
             return false;
         }
 
@@ -171,6 +168,7 @@ public class Register extends AppCompatActivity {
 
         return true;
     }
+
     // User class for storing user data in Firebase
     public static class User {
         public String username;
@@ -183,6 +181,21 @@ public class Register extends AppCompatActivity {
             this.username = username;
             this.email = email;
             this.phoneNumber = phoneNumber;
+        }
+    }
+
+    private void updateUI(FirebaseUser user) {
+        if (user.isEmailVerified()) {
+            startActivity(new Intent(this, HomeActivity.class));
+            finish();
+        } else {
+            user.sendEmailVerification()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(this, "Verification email sent to " + user.getEmail(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+            startActivity(new Intent(this, signUp.class));
         }
     }
 }

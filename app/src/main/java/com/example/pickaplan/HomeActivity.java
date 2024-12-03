@@ -69,13 +69,16 @@ public class HomeActivity extends AppCompatActivity {
     private AVLTree tree;
     private ArrayAdapter<String> adapter;
 
-    //
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Save the search frequencies to the log file
-        tracker.updateLogFile();
+        Log.d("HomeActivity", "onDestroy called");
+        if (tracker != null) {
+            tracker.updateLogFile();
+        } else {
+            Log.w("HomeActivity", "Tracker is null in onDestroy");
+        }
     }
 
 
