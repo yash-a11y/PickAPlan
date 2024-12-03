@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
 
+
 }
 
 android {
@@ -39,6 +40,20 @@ dependencies {
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4") // Optional if you're using ConstraintLayout
     // Retrofit core
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+
+    //firebaseAuth
+
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+
+    // Add the dependency for Firebase Authentication
+    implementation("com.google.firebase:firebase-auth")
+
+//    // Add the dependency for Google Play services
+//    implementation("com.google.android.gms:play-services-auth:21.2.0")
+
+    //
 
     // Converter for JSON (Gson)
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")

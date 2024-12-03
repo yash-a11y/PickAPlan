@@ -30,10 +30,5 @@ public class splashActivity extends AppCompatActivity {
             finish();
         }, 6000);
 
-        new Thread(() -> {
-
-
-
-        }).start();
     }
 }

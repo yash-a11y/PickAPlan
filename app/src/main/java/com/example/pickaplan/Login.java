@@ -77,9 +77,10 @@ public class Login extends AppCompatActivity {
                         Log.d("mail",user.getEmail().toString());
                         if (user.isEmailVerified()) {
                             // Navigate to Home Activity
-                            Intent intent = new Intent(Login.this, HomeActivity.class);
-                            startActivity(intent);
-                            finish();
+//                            Intent intent = new Intent(Login.this, HomeActivity.class);
+//                            startActivity(intent);
+                            Toast.makeText(Login.this, "home " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
                         } else {
                             Toast.makeText(Login.this, "Please verify your email first", Toast.LENGTH_SHORT).show();
                         }
@@ -105,7 +106,8 @@ public class Login extends AppCompatActivity {
             startActivity(new Intent(Login.this, HomeActivity.class));
             finish();
         } else {
-            user.sendEmailVerification();
+//            user.sendEmailVerification();
+
             Toast.makeText(Login.this, "Verify email first", Toast.LENGTH_LONG).show();
         }
     }
