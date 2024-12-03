@@ -1,7 +1,6 @@
 package com.example.pickaplan;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.Animation;
@@ -25,10 +24,16 @@ public class splashActivity extends AppCompatActivity {
         splashImg.setVisibility(ImageView.VISIBLE);
         splashImg.startAnimation(anim);
 
-        // Check user authentication after splash animation
         new Handler().postDelayed(() -> {
-            startActivity(new Intent(this, signUp.class));
-            finish(); // Close splash activity
-        }, 6000); // Wait for 6 seconds before transitioning
+            Intent intent = new Intent(splashActivity.this, Login.class);
+            startActivity(intent);
+            finish();
+        }, 6000);
+
+        new Thread(() -> {
+
+
+
+        }).start();
     }
 }

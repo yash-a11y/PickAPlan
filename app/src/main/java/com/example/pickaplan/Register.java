@@ -55,18 +55,18 @@ public class Register extends AppCompatActivity {
         goToHome = findViewById(R.id.HomeText);
         //goToSignIn = findViewById(R.id.goToSignIn);
 
-        // If the user is already logged in, navigate to the HomeActivity
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // If user is already authenticated, navigate to HomeActivity
-            Intent intent = new Intent(Register.this, HomeActivity.class);
-            startActivity(intent);
-            finish();
-        }
+//        // If the user is already logged in, navigate to the HomeActivity
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        if (user != null) {
+//            // If user is already authenticated, navigate to HomeActivity
+//            Intent intent = new Intent(Register.this, HomeActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
 
         // On "Go to Sign In" link click, navigate to SignIn activity
         goToHome.setOnClickListener(view -> {
-            Intent intent = new Intent(Register.this, signUp.class);
+            Intent intent = new Intent(Register.this, Login.class);
             startActivity(intent);
         });
 
@@ -102,7 +102,7 @@ public class Register extends AppCompatActivity {
                                                 .addOnCompleteListener(verificationTask -> {
                                                     if (verificationTask.isSuccessful()) {
                                                         Toast.makeText(Register.this, "Registration Successful! Verification email sent.", Toast.LENGTH_LONG).show();
-                                                        Intent intent = new Intent(Register.this, signUp.class); // Go to Sign In after registration
+                                                        Intent intent = new Intent(Register.this, Login.class); // Go to Sign In after registration
                                                         startActivity(intent);
                                                         finish();
                                                     } else {
@@ -195,7 +195,7 @@ public class Register extends AppCompatActivity {
                             Toast.makeText(this, "Verification email sent to " + user.getEmail(), Toast.LENGTH_LONG).show();
                         }
                     });
-            startActivity(new Intent(this, signUp.class));
+            startActivity(new Intent(this, Login.class));
         }
     }
 }
