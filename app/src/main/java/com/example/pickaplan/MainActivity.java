@@ -37,21 +37,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-//        Button register = findViewById(R.id.btnsignup);
-//        register.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, signUp.class);
-//                startActivity(intent);
-//            }
-//        });
-
-
-
-        // Fetch mobile plans from the API
-       // fetchMobilePlans();
-
-        // Fetch phone data from the API
 
 
     }

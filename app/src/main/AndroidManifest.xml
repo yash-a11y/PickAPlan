@@ -38,7 +38,6 @@
             android:name=".MainActivity"
             android:exported="true" />
         <activity android:name=".HomeActivity" />
-        <activity android:name=".signUp" />
     </application>
 
 </manifest>

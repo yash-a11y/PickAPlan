@@ -29,7 +29,7 @@
         android:text="Find your perfect plan, anytime, anywhere"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/usernameEditText"
+        app:layout_constraintBottom_toTopOf="@+id/userET"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +38,7 @@
 
     <!-- Password EditText -->
     <EditText
-        android:id="@+id/usernameEditText"
+        android:id="@+id/userET"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
@@ -69,13 +69,13 @@
         android:padding="16dp"
         android:textColor="#B3B3B3"
         android:textColorHint="#B3B3B3"
-        app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
+        app:layout_constraintBottom_toTopOf="@+id/passET"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/userET" />
 
     <EditText
-        android:id="@+id/passwordEditText"
+        android:id="@+id/passET"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
@@ -110,7 +110,7 @@
         app:layout_constraintBottom_toTopOf="@+id/PhonenumberEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/passET" />
 
 
     <EditText

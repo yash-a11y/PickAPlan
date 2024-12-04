@@ -1,91 +1,88 @@
 package com.example.pickaplan;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
-    private EditText etUserName, etPassword ;
-    private TextView etRegister;
+    private EditText etUserName, etPassword;
+    private TextView tvRegister;
     private Button btnLogin;
+    private FirebaseAuth mAuth;
 
-    private FirebaseAuth mAuth; // Firebase Authentication instance
+    private  FirebaseUser currentUser;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            updateUI(user);
-        }
-    }
+
+    private static final String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+
 
         mAuth = FirebaseAuth.getInstance();
 
-        etUserName = findViewById(R.id.usernameEditText);
-        etPassword = findViewById(R.id.passwordEditText);
+        etUserName = findViewById(R.id.userET);
+        etPassword = findViewById(R.id.passET);
         btnLogin = findViewById(R.id.signInButton);
-        etRegister = findViewById(R.id.HomeText);
+        tvRegister = findViewById(R.id.HomeText);
 
-        etRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Login.this, Register.class);
-                startActivity(intent);
-            }
+        tvRegister.setOnClickListener(view -> {
+            startActivity(new Intent(Login.this, Register.class));
         });
-
 
         btnLogin.setOnClickListener(v -> {
             if (validateInputs()) {
                 signInUser();
             }
         });
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+         currentUser = mAuth.getCurrentUser();
+        if (currentUser != null && currentUser.isEmailVerified()) {
+
+
+
+            updateUI(currentUser);
+        }
     }
 
     private void signInUser() {
         String email = etUserName.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
+                .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        Log.d("mail",user.getEmail().toString());
-                        if (user.isEmailVerified()) {
-                            // Navigate to Home Activity
-//                            Intent intent = new Intent(Login.this, HomeActivity.class);
-//                            startActivity(intent);
-                            Toast.makeText(Login.this, "home " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            Toast.makeText(Login.this, "Please verify your email first", Toast.LENGTH_SHORT).show();
+                        if (user != null) {
+                            if (user.isEmailVerified()) {
+                                Log.d(TAG, "signInWithEmail:success");
+                                updateUI(user);
+                            } else {
+                                Toast.makeText(Login.this, "Please verify your email first", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     } else {
-                        Toast.makeText(Login.this, "Sign-In failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(Login.this, "Authentication failed: " + task.getException().getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -94,21 +91,32 @@ public class Login extends AppCompatActivity {
         String email = etUserName.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-            Toast.makeText(Login.this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(email)) {
+            etUserName.setError("Email is required");
             return false;
         }
+
+        if (TextUtils.isEmpty(password)) {
+            etPassword.setError("Password is required");
+            return false;
+        }
+
         return true;
     }
 
     private void updateUI(FirebaseUser user) {
-        if (user.isEmailVerified()) {
-            startActivity(new Intent(Login.this, HomeActivity.class));
-            finish();
-        } else {
-//            user.sendEmailVerification();
 
-            Toast.makeText(Login.this, "Verify email first", Toast.LENGTH_LONG).show();
-        }
+        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("name", currentUser.getEmail());
+        editor.apply();
+
+        Log.d("gotoh","go to home");
+        Intent intent = new Intent(Login.this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

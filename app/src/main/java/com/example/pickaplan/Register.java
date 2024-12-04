@@ -3,25 +3,30 @@ package com.example.pickaplan;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Patterns;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Register extends AppCompatActivity {
 
+    private static final String TAG = "RegisterActivity";
+
     private EditText etUserName, etEmail, etPassword, etConfirmPassword, etPhoneNumber;
     private Button btnRegister;
-    private TextView goToHome, goToSignIn;
+    private TextView goToHome;
 
     private FirebaseAuth mAuth; // Firebase Authentication instance
     private DatabaseReference databaseReference; // Firebase Realtime Database reference
@@ -29,12 +34,12 @@ public class Register extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        // Check if the user is already logged in
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            updateUI(user);
+            updateUI(user); // If already logged in, go to HomeActivity
         }
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,23 +51,13 @@ public class Register extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference("Users");
 
         // Initialize Views
-        etUserName = findViewById(R.id.usernameEditText);
+        etUserName = findViewById(R.id.userET);
         etEmail = findViewById(R.id.EmailEditText);
-        etPassword = findViewById(R.id.passwordEditText);
+        etPassword = findViewById(R.id.passET);
         etConfirmPassword = findViewById(R.id.confirmpasswordEditText);
         etPhoneNumber = findViewById(R.id.PhonenumberEditText);
         btnRegister = findViewById(R.id.registerButton);
         goToHome = findViewById(R.id.HomeText);
-        //goToSignIn = findViewById(R.id.goToSignIn);
-
-//        // If the user is already logged in, navigate to the HomeActivity
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user != null) {
-//            // If user is already authenticated, navigate to HomeActivity
-//            Intent intent = new Intent(Register.this, HomeActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
 
         // On "Go to Sign In" link click, navigate to SignIn activity
         goToHome.setOnClickListener(view -> {
@@ -84,39 +79,64 @@ public class Register extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
         String phoneNumber = etPhoneNumber.getText().toString().trim();
 
+        // Check if Firebase is initialized properly
+        if (mAuth == null || databaseReference == null) {
+            Log.e(TAG, "Firebase initialization failed.");
+            Toast.makeText(this, "Something went wrong. Please try again later.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // Create user with email and password in Firebase Authentication
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
+                .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Get the Firebase User ID
                         FirebaseUser user = mAuth.getCurrentUser();
-                        String userId = user.getUid();
+                        if (user != null) {
+                            String userId = user.getUid();
 
-                        // Save user details in Firebase Realtime Database
-                        User userDetails = new User(username, email, phoneNumber);
-                        databaseReference.child(userId).setValue(userDetails)
-                                .addOnCompleteListener(dbTask -> {
-                                    if (dbTask.isSuccessful()) {
-                                        // Send email verification
-                                        user.sendEmailVerification()
-                                                .addOnCompleteListener(verificationTask -> {
-                                                    if (verificationTask.isSuccessful()) {
-                                                        Toast.makeText(Register.this, "Registration Successful! Verification email sent.", Toast.LENGTH_LONG).show();
-                                                        Intent intent = new Intent(Register.this, Login.class); // Go to Sign In after registration
-                                                        startActivity(intent);
-                                                        finish();
-                                                    } else {
-                                                        Toast.makeText(Register.this, "Failed to send verification email", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                    } else {
-                                        Toast.makeText(Register.this, "Failed to save user data: " + dbTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                            // Save user details in Firebase Realtime Database
+                            User userDetails = new User(username, email, phoneNumber);
+                            databaseReference.child(userId).setValue(userDetails)
+                                    .addOnCompleteListener(dbTask -> {
+                                        if (dbTask.isSuccessful()) {
+                                            // Send email verification
+                                            sendEmailVerification(user);
+                                        } else {
+                                            // Show error if data couldn't be saved
+                                            Log.e(TAG, "Failed to save user data: " + dbTask.getException().getMessage());
+                                            Toast.makeText(Register.this, "Failed to save user data.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
                     } else {
-                        Toast.makeText(Register.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        // Handle user already exists or other errors
+                        handleRegistrationError(task);
                     }
                 });
+    }
+
+    private void sendEmailVerification(FirebaseUser user) {
+        user.sendEmailVerification()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(Register.this, "Registration Successful! Verification email sent.", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(Register.this, Login.class); // Go to Sign In after registration
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(Register.this, "Failed to send verification email", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void handleRegistrationError(@NonNull Task<AuthResult> task) {
+        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+            Toast.makeText(Register.this, "Email is already in use. Please log in.", Toast.LENGTH_SHORT).show();
+        } else {
+            Log.e(TAG, "Registration failed: " + task.getException().getMessage());
+            Toast.makeText(Register.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean validateInputs() {
@@ -186,9 +206,11 @@ public class Register extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user.isEmailVerified()) {
+            // If user is verified, go to HomeActivity
             startActivity(new Intent(this, HomeActivity.class));
             finish();
         } else {
+            // If user is not verified, send verification email
             user.sendEmailVerification()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {

@@ -33,7 +33,7 @@
 
     <!-- Username/Email EditText -->
     <EditText
-        android:id="@+id/usernameEditText"
+        android:id="@+id/userET"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/subtitle"
@@ -47,10 +47,10 @@
         android:autofillHints="username" />
 
     <EditText
-        android:id="@+id/passwordEditText"
+        android:id="@+id/passET"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/usernameEditText"
+        android:layout_below="@id/userET"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="32dp"
         android:hint="Password"
@@ -67,7 +67,7 @@
         android:id="@+id/forgotPasswordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/passwordEditText"
+        android:layout_below="@id/passET"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"

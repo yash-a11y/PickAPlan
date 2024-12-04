@@ -68,6 +68,7 @@ public class Plans extends AppCompatActivity {
 
     private SpellChecker spellChecker;
     private String fileName;
+    private List<planData> mobilePlans = new ArrayList<>();
 
     private Context context = this;
 
@@ -76,6 +77,7 @@ public class Plans extends AppCompatActivity {
     private EditText searchBar;
 
     private Spinner options;
+    private int opr = -1;
 
     private TextView notFound;
 
@@ -95,6 +97,11 @@ public class Plans extends AppCompatActivity {
         searchRV = findViewById(R.id.searchRV);
 
 
+        mobilePlans = getIntent().getParcelableArrayListExtra("planData");
+        opr = getIntent().getIntExtra("opr",0);
+
+
+
 
         notFound = findViewById(R.id.notFound);
         progressBar = findViewById(R.id.progressBar);
@@ -111,7 +118,7 @@ public class Plans extends AppCompatActivity {
         oprator = intent.getIntExtra("operator",0);
 
         progressBar.setVisibility(View.VISIBLE);
-        fetchMobilePlans();
+
         topSearch = tracker.displayTopSearches();
 
 //        list.add(new planData(R.drawable.fido,"Fido Essential","30",
@@ -135,6 +142,7 @@ public class Plans extends AppCompatActivity {
             searchRV.setAdapter(searchAdp);
         }
 
+        fetchMobilePlans();
 
         LinearLayout homeNav = findViewById(R.id.nav_home);
         LinearLayout  analysisNav = findViewById(R.id.nav_explore);
@@ -145,6 +153,9 @@ public class Plans extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+                opr = -1;
+
+
             }
         });
 
@@ -216,17 +227,32 @@ public class Plans extends AppCompatActivity {
         Call<List<planData>> call = null;
 
 
-        switch (oprator){
-            case 0: {
+        if(mobilePlans != null && !mobilePlans.isEmpty() && opr != -1 )
+        {
+            progressBar.setVisibility(
+                    View.GONE
+            );
+            searchBar.setVisibility(View.GONE);
+            searchRV.setVisibility(View.GONE
+            );
+
+            plans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
 
 
-                    call =  apiService.getFidoPlans();
+            updateRecyclerView(mobilePlans);
+        }
+        else {
+            switch (oprator) {
+                case 0: {
+
+
+                    call = apiService.getFidoPlans();
                     fileName = "fido.csv";
                     callApi(call);
 
-            }
-            break;
-            case 1:{
+                }
+                break;
+                case 1: {
 
 
                     call = apiService.getrogersPlans();
@@ -234,39 +260,42 @@ public class Plans extends AppCompatActivity {
                     callApi(call);
 
 
+                }
+                break;
+                case 2: {
+
+
+                    call = apiService.getTelusPlan();
+                    fileName = "telus.csv";
+                    callApi(call);
+
+
+                }
+                break;
+                case 3: {
+
+
+                    call = apiService.getKoodoPlan();
+                    fileName = "Koodo.csv";
+                    callApi(call);
+
+
+                }
+                break;
+                case 4: {
+
+
+                    call = apiService.getVirginPlans();
+                    fileName = "virgin.csv";
+                    callApi(call);
+
+
+                }
+
+                default:
+                    Log.d("selection_err", "error");
             }
-            break;
-            case 2:{
 
-
-                call = apiService.getTelusPlan();
-                fileName = "telus.csv";
-                callApi(call);
-
-
-            }
-            break;
-            case 3:{
-
-
-                call = apiService.getKoodoPlan();
-                fileName = "Koodo.csv";
-                callApi(call);
-
-
-            }
-            break;
-            case 4:{
-
-
-                call = apiService.getVirginPlans();
-                fileName = "virgin.csv";
-                callApi(call);
-
-
-            }
-
-            default:Log.d("selection_err","error");
         }
 
 
@@ -292,7 +321,7 @@ public class Plans extends AppCompatActivity {
 
         tree = new AVLTree();
 // Attempt to load data from CSV first
-        List<planData> mobilePlans = loadDataFromCSV();
+         mobilePlans = loadDataFromCSV();
 
 // If CSV data is available, use it; otherwise, make the API call
         if (!mobilePlans.isEmpty()) {
@@ -487,7 +516,7 @@ public class Plans extends AppCompatActivity {
                 //pattern search
                 patternFind patternFind =  new patternFind();
 
-                    planData = patternFind.searchResults(planData,searchTerm);
+                    planData = patternFind.searchResults(mobilePlans,searchTerm);
                     if(planData.isEmpty() | topsrch == ""){
 
                         if (rightSpelling.isEmpty())
@@ -586,7 +615,14 @@ public class Plans extends AppCompatActivity {
     private void updateRecyclerView(List<planData> newPlanData) {
         try {
             if (adpater == null) {
-                adpater = new plansAdapter(Plans.this, newPlanData, oprator);
+
+                if(opr != -1){
+                    adpater = new plansAdapter(Plans.this, newPlanData, opr);
+                }
+                else{
+                    adpater = new plansAdapter(Plans.this, newPlanData, oprator);
+                }
+
                 plans.setAdapter(adpater);
             } else {
                 adpater.updateData(newPlanData);
