@@ -40,8 +40,12 @@ import com.example.pickaplan.features.patternFind;
 import com.example.pickaplan.features.spellCheck.SpellChecker;
 import com.example.pickaplan.fragments.BrandActivity;
 import com.example.pickaplan.fragments.analyticsFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -374,6 +379,9 @@ public class Plans extends AppCompatActivity
 
                 }
             }).start();
+
+
+
 
 
 
@@ -745,6 +753,69 @@ public class Plans extends AppCompatActivity
             }
         });
     }
+
+
+    // likedplans Button visibility logic
+
+
+    public static boolean likedCommonPlans(Context context, planData plan) {
+
+        final boolean[] present = {false};
+        // Get the current user's ID
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Reference to the specific user's data
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+
+        // Add a listener to fetch the data once
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Extract the Plans node
+                    DataSnapshot plansSnapshot = dataSnapshot.child("Plans");
+                    if (plansSnapshot.exists()) {
+                        // Retrieve the plans as a Map
+                        Map<String, Boolean> plans = (Map<String, Boolean>) plansSnapshot.getValue();
+
+                        if (plans != null) {
+                            // Iterate through the Map
+                            for (Map.Entry<String, Boolean> entry : plans.entrySet()) {
+                                String planName = entry.getKey(); // Plan name
+                                Boolean isActive = entry.getValue(); // Status of the plan (true/false)
+
+                                if(planName.trim().toLowerCase().equals(plan.getPlanName().trim().toLowerCase()))
+                                {
+                                    present[0] = true;
+                                    break;
+                                }
+                                // Log each plan
+
+
+                                Log.d("actlp", plan.getPlanName());
+                                Log.d("Plan", "Plan Name: " + planName + ", Status: " + isActive);
+                            }
+                        } else {
+                            Log.d("Liked", "No plans found for user: " + userId);
+                        }
+                    } else {
+                        Log.d("Liked", "Plans node doesn't exist for user: " + userId);
+                    }
+                } else {
+                    Log.d("Liked", "User not found: " + userId);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("DatabaseError", "Error: " + databaseError.getMessage());
+            }
+        });
+
+
+        return present[0];
+    }
+
 
     //
 }

@@ -14,6 +14,8 @@ public class planData implements Parcelable {
     private String planprice;
     private String details;
 
+    private  boolean liked = false;
+
     public planData(int brand, String planName, String price, String details) {
         this.brand = brand;
         this.planname = planName;
@@ -21,6 +23,14 @@ public class planData implements Parcelable {
         this.details = details;
     }
 
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+
+    public boolean getLiked() {
+        return liked;
+    }
     public int getBrand() {
         return brand;
     }
