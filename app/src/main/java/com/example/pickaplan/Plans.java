@@ -68,7 +68,6 @@ public class Plans extends AppCompatActivity {
 
     private SpellChecker spellChecker;
     private String fileName;
-    private List<planData> mobilePlans = new ArrayList<>();
 
     private Context context = this;
 
@@ -77,7 +76,6 @@ public class Plans extends AppCompatActivity {
     private EditText searchBar;
 
     private Spinner options;
-    private int opr = -1;
 
     private TextView notFound;
 
@@ -97,11 +95,6 @@ public class Plans extends AppCompatActivity {
         searchRV = findViewById(R.id.searchRV);
 
 
-        mobilePlans = getIntent().getParcelableArrayListExtra("planData");
-        opr = getIntent().getIntExtra("opr",-1);
-
-
-
 
         notFound = findViewById(R.id.notFound);
         progressBar = findViewById(R.id.progressBar);
@@ -118,7 +111,7 @@ public class Plans extends AppCompatActivity {
         oprator = intent.getIntExtra("operator",0);
 
         progressBar.setVisibility(View.VISIBLE);
-
+        fetchMobilePlans();
         topSearch = tracker.displayTopSearches();
 
 //        list.add(new planData(R.drawable.fido,"Fido Essential","30",
@@ -142,7 +135,6 @@ public class Plans extends AppCompatActivity {
             searchRV.setAdapter(searchAdp);
         }
 
-        fetchMobilePlans();
 
         LinearLayout homeNav = findViewById(R.id.nav_home);
         LinearLayout  analysisNav = findViewById(R.id.nav_explore);
@@ -153,9 +145,6 @@ public class Plans extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
-                opr = -1;
-
-
             }
         });
 
@@ -227,32 +216,17 @@ public class Plans extends AppCompatActivity {
         Call<List<planData>> call = null;
 
 
-        if(mobilePlans != null && !mobilePlans.isEmpty() && opr != -1 )
-        {
-            progressBar.setVisibility(
-                    View.GONE
-            );
-            searchBar.setVisibility(View.GONE);
-            searchRV.setVisibility(View.GONE
-            );
-
-            plans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
+        switch (oprator){
+            case 0: {
 
 
-            updateRecyclerView(mobilePlans);
-        }
-        else {
-            switch (oprator) {
-                case 0: {
-
-
-                    call = apiService.getFidoPlans();
+                    call =  apiService.getFidoPlans();
                     fileName = "fido.csv";
                     callApi(call);
 
-                }
-                break;
-                case 1: {
+            }
+            break;
+            case 1:{
 
 
                     call = apiService.getrogersPlans();
@@ -260,42 +234,39 @@ public class Plans extends AppCompatActivity {
                     callApi(call);
 
 
-                }
-                break;
-                case 2: {
+            }
+            break;
+            case 2:{
 
 
-                    call = apiService.getTelusPlan();
-                    fileName = "telus.csv";
-                    callApi(call);
+                call = apiService.getTelusPlan();
+                fileName = "telus.csv";
+                callApi(call);
 
 
-                }
-                break;
-                case 3: {
+            }
+            break;
+            case 3:{
 
 
-                    call = apiService.getKoodoPlan();
-                    fileName = "Koodo.csv";
-                    callApi(call);
+                call = apiService.getKoodoPlan();
+                fileName = "Koodo.csv";
+                callApi(call);
 
 
-                }
-                break;
-                case 4: {
+            }
+            break;
+            case 4:{
 
 
-                    call = apiService.getVirginPlans();
-                    fileName = "virgin.csv";
-                    callApi(call);
+                call = apiService.getVirginPlans();
+                fileName = "virgin.csv";
+                callApi(call);
 
 
-                }
-
-                default:
-                    Log.d("selection_err", "error");
             }
 
+            default:Log.d("selection_err","error");
         }
 
 
@@ -321,7 +292,7 @@ public class Plans extends AppCompatActivity {
 
         tree = new AVLTree();
 // Attempt to load data from CSV first
-         mobilePlans = loadDataFromCSV();
+        List<planData> mobilePlans = loadDataFromCSV();
 
 // If CSV data is available, use it; otherwise, make the API call
         if (!mobilePlans.isEmpty()) {
@@ -492,13 +463,11 @@ public class Plans extends AppCompatActivity {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String searchTerm = searchBar.getText().toString().trim();
                 if (!searchTerm.isEmpty()) {
-
+                    tracker.search(searchTerm);
 
                     try {
                         spellChecker = new SpellChecker(planData);
                         rightSpelling =  spellChecker.spellcheck(this,searchTerm.toLowerCase());
-                        tracker.search(searchTerm);
-                        tracker.updateLogFile();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -516,7 +485,7 @@ public class Plans extends AppCompatActivity {
                 //pattern search
                 patternFind patternFind =  new patternFind();
 
-                    planData = patternFind.searchResults(mobilePlans,searchTerm);
+                    planData = patternFind.searchResults(planData,searchTerm);
                     if(planData.isEmpty() | topsrch == ""){
 
                         if (rightSpelling.isEmpty())
@@ -615,16 +584,7 @@ public class Plans extends AppCompatActivity {
     private void updateRecyclerView(List<planData> newPlanData) {
         try {
             if (adpater == null) {
-
-                if(opr != -1){
-                    Log.d("oprt0","yes"+opr);
-                    adpater = new plansAdapter(Plans.this, newPlanData, opr);
-                }
-                else{
-                    Log.d("oprt1","yes"+oprator);
-                    adpater = new plansAdapter(Plans.this, newPlanData, oprator);
-                }
-
+                adpater = new plansAdapter(Plans.this, newPlanData, oprator);
                 plans.setAdapter(adpater);
             } else {
                 adpater.updateData(newPlanData);

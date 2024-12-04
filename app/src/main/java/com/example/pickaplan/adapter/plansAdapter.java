@@ -74,8 +74,7 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
     }
 
     public void updateData(List<planData> newItems) {
-        plans.clear();
-        plans.addAll(newItems);
+        this.plans = newItems;
         notifyDataSetChanged();  // Refreshes the entire RecyclerView
     }
 
