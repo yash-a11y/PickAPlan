@@ -139,17 +139,26 @@
                 android:layout_gravity="center_horizontal"
                 android:visibility="gone"
                 />
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/plan_view"
+
+            <LinearLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="8dp"
-                android:layout_gravity="center"
-                android:horizontalSpacing="8dp"
-                android:orientation="horizontal"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:verticalSpacing="8dp" />
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/plan_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    android:horizontalSpacing="8dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:verticalSpacing="8dp" />
+            </LinearLayout>
+
 
         </LinearLayout>
     </FrameLayout>

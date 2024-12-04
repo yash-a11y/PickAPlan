@@ -6,6 +6,7 @@
     android:layout_margin="8dp"
     app:cardElevation="4dp"
     app:cardCornerRadius="12dp"
+    android:layout_gravity="center_horizontal"
 
     >
 
@@ -15,6 +16,7 @@
         android:layout_gravity="center_horizontal"
         android:backgroundTint="@color/cardcolor"
         android:orientation="vertical"
+        android:gravity="center"
         android:padding="10dp">
 
 
