@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,13 +51,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Plans extends AppCompatActivity {
+public class Plans extends AppCompatActivity
+        implements AdapterView.OnItemSelectedListener{
 
     private AVLTree tree;
 
@@ -68,6 +72,7 @@ public class Plans extends AppCompatActivity {
 
     private SpellChecker spellChecker;
     private String fileName;
+    private List<planData> mobilePlans = new ArrayList<>();
 
     private Context context = this;
 
@@ -76,12 +81,17 @@ public class Plans extends AppCompatActivity {
     private EditText searchBar;
 
     private Spinner options;
+    private int opr = -1;
+
+
 
     private TextView notFound;
 
     private SuggestionsAdapter searchAdp;
 
     private String  topsrch = "";
+
+    private Spinner priceSorter;
 
 
     private   plansAdapter adpater;
@@ -93,6 +103,12 @@ public class Plans extends AppCompatActivity {
         setContentView(R.layout.activity_plans);
 
         searchRV = findViewById(R.id.searchRV);
+        priceSorter  = findViewById(R.id.simpleSpinner);
+
+
+        mobilePlans = getIntent().getParcelableArrayListExtra("planData");
+        opr = getIntent().getIntExtra("opr",-1);
+
 
 
 
@@ -100,7 +116,7 @@ public class Plans extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         ImageView back_button = findViewById(R.id.back_button);
         searchBar = findViewById(R.id.search_bar);
-       plans = findViewById(R.id.plan_view);
+        plans = findViewById(R.id.plan_view);
         tracker = new SearchFrequencyTracker(this);
         //List<planData> list = new  ArrayList<>();
         plans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
@@ -111,7 +127,7 @@ public class Plans extends AppCompatActivity {
         oprator = intent.getIntExtra("operator",0);
 
         progressBar.setVisibility(View.VISIBLE);
-        fetchMobilePlans();
+
         topSearch = tracker.displayTopSearches();
 
 //        list.add(new planData(R.drawable.fido,"Fido Essential","30",
@@ -128,6 +144,17 @@ public class Plans extends AppCompatActivity {
 //        list.add(new planData(R.drawable.fido,"Fido Essential","30",
 //                "\"Data\\n3 GB, 30 Days Validity\\nTalk  Text\\nUnlimited Canada-Wide\\nExtras\\nWi-Fi Calling, Text Internationally"));
 
+
+        //spinner work here :
+        priceSorter.setOnItemSelectedListener(this);
+        // Create an ArrayAdapter using a string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.planets_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        priceSorter.setAdapter(adapter);
+        //
+
         if(!topSearch.isEmpty())
         {
             searchRV.setVisibility(View.VISIBLE);
@@ -135,6 +162,7 @@ public class Plans extends AppCompatActivity {
             searchRV.setAdapter(searchAdp);
         }
 
+        fetchMobilePlans();
 
         LinearLayout homeNav = findViewById(R.id.nav_home);
         LinearLayout  analysisNav = findViewById(R.id.nav_explore);
@@ -145,6 +173,9 @@ public class Plans extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+                opr = -1;
+
+
             }
         });
 
@@ -190,7 +221,7 @@ public class Plans extends AppCompatActivity {
                 hideViewWithAnimation(searchBar);
 
 //                options.setVisibility(View.GONE);
-                
+
                 TextView title = findViewById(R.id.nav_title);
                 if(title.getText() != "Analytics")
                 {
@@ -205,7 +236,7 @@ public class Plans extends AppCompatActivity {
             }
         });
 
-     searchOperations();
+        searchOperations();
     }
 
     private void fetchMobilePlans() {
@@ -216,17 +247,32 @@ public class Plans extends AppCompatActivity {
         Call<List<planData>> call = null;
 
 
-        switch (oprator){
-            case 0: {
+        if(mobilePlans != null && !mobilePlans.isEmpty() && opr != -1 )
+        {
+            progressBar.setVisibility(
+                    View.GONE
+            );
+            searchBar.setVisibility(View.GONE);
+            searchRV.setVisibility(View.GONE
+            );
+
+            plans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
 
 
-                    call =  apiService.getFidoPlans();
+            updateRecyclerView(mobilePlans);
+        }
+        else {
+            switch (oprator) {
+                case 0: {
+
+
+                    call = apiService.getFidoPlans();
                     fileName = "fido.csv";
                     callApi(call);
 
-            }
-            break;
-            case 1:{
+                }
+                break;
+                case 1: {
 
 
                     call = apiService.getrogersPlans();
@@ -234,39 +280,42 @@ public class Plans extends AppCompatActivity {
                     callApi(call);
 
 
+                }
+                break;
+                case 2: {
+
+
+                    call = apiService.getTelusPlan();
+                    fileName = "telus.csv";
+                    callApi(call);
+
+
+                }
+                break;
+                case 3: {
+
+
+                    call = apiService.getKoodoPlan();
+                    fileName = "Koodo.csv";
+                    callApi(call);
+
+
+                }
+                break;
+                case 4: {
+
+
+                    call = apiService.getVirginPlans();
+                    fileName = "virgin.csv";
+                    callApi(call);
+
+
+                }
+
+                default:
+                    Log.d("selection_err", "error");
             }
-            break;
-            case 2:{
 
-
-                call = apiService.getTelusPlan();
-                fileName = "telus.csv";
-                callApi(call);
-
-
-            }
-            break;
-            case 3:{
-
-
-                call = apiService.getKoodoPlan();
-                fileName = "Koodo.csv";
-                callApi(call);
-
-
-            }
-            break;
-            case 4:{
-
-
-                call = apiService.getVirginPlans();
-                fileName = "virgin.csv";
-                callApi(call);
-
-
-            }
-
-            default:Log.d("selection_err","error");
         }
 
 
@@ -292,7 +341,7 @@ public class Plans extends AppCompatActivity {
 
         tree = new AVLTree();
 // Attempt to load data from CSV first
-        List<planData> mobilePlans = loadDataFromCSV();
+        mobilePlans = loadDataFromCSV();
 
 // If CSV data is available, use it; otherwise, make the API call
         if (!mobilePlans.isEmpty()) {
@@ -429,11 +478,11 @@ public class Plans extends AppCompatActivity {
 
     public void splitData(String line)
     {
-            String[] words = line.split(" ");
-            for (String word : words) {
-                Log.d("word",word);
-                tree.insert(word.toLowerCase());
-            }
+        String[] words = line.split(" ");
+        for (String word : words) {
+            Log.d("word",word);
+            tree.insert(word.toLowerCase());
+        }
 
     }
 
@@ -463,11 +512,13 @@ public class Plans extends AppCompatActivity {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String searchTerm = searchBar.getText().toString().trim();
                 if (!searchTerm.isEmpty()) {
-                    tracker.search(searchTerm);
+
 
                     try {
                         spellChecker = new SpellChecker(planData);
                         rightSpelling =  spellChecker.spellcheck(this,searchTerm.toLowerCase());
+                        tracker.search(searchTerm);
+                        tracker.updateLogFile();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -485,33 +536,33 @@ public class Plans extends AppCompatActivity {
                 //pattern search
                 patternFind patternFind =  new patternFind();
 
-                    planData = patternFind.searchResults(planData,searchTerm);
-                    if(planData.isEmpty() | topsrch == ""){
+                planData = patternFind.searchResults(mobilePlans,searchTerm);
+                if(planData.isEmpty() | topsrch == ""){
 
-                        if (rightSpelling.isEmpty())
-                        {
-                            Toast.makeText(this,"No Match Found\nWhat do you mean?",Toast.LENGTH_LONG).show();
-
-                        }
-                        else {
-                            Toast.makeText(this,"No Match Found\nDo you mean "+rightSpelling+" ?",Toast.LENGTH_LONG).show();
-
-                        }
-
-
+                    if (rightSpelling.isEmpty())
+                    {
+                        Toast.makeText(this,"No Match Found\nWhat do you mean?",Toast.LENGTH_LONG).show();
 
                     }
-                    else{
+                    else {
+                        Toast.makeText(this,"No Match Found\nDo you mean "+rightSpelling+" ?",Toast.LENGTH_LONG).show();
 
-                        for(planData e : planData)Log.d("pdata",e.getPlanName());
-                        updateRecyclerView(planData);
-                        tracker.updateLogFile();
-                        topSearch = tracker.displayTopSearches();
-                        if(!topSearch.isEmpty()) {
-                            searchRV.setVisibility(View.VISIBLE);
-                            searchAdp.updateSuggestions(topSearch);
-                        }
                     }
+
+
+
+                }
+                else{
+
+                    for(planData e : planData)Log.d("pdata",e.getPlanName());
+                    updateRecyclerView(planData);
+                    tracker.updateLogFile();
+                    topSearch = tracker.displayTopSearches();
+                    if(!topSearch.isEmpty()) {
+                        searchRV.setVisibility(View.VISIBLE);
+                        searchAdp.updateSuggestions(topSearch);
+                    }
+                }
 
 
 
@@ -584,7 +635,16 @@ public class Plans extends AppCompatActivity {
     private void updateRecyclerView(List<planData> newPlanData) {
         try {
             if (adpater == null) {
-                adpater = new plansAdapter(Plans.this, newPlanData, oprator);
+
+                if(opr != -1){
+                    Log.d("oprt0","yes"+opr);
+                    adpater = new plansAdapter(Plans.this, newPlanData, opr);
+                }
+                else{
+                    Log.d("oprt1","yes"+oprator);
+                    adpater = new plansAdapter(Plans.this, newPlanData, oprator);
+                }
+
                 plans.setAdapter(adpater);
             } else {
                 adpater.updateData(newPlanData);
@@ -611,6 +671,56 @@ public class Plans extends AppCompatActivity {
                 .alpha(1f) // Fade in
                 .setDuration(300) // Duration in ms
                 .start();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String item = parent.getItemAtPosition(position).toString();
+        switch (position)
+        {
+            case 1:
+            {
+                Log.d("dataB", mobilePlans.get(0).getPlanName());
+                sortPlansByPriceAscending(mobilePlans);
+                Log.d("dataA", mobilePlans.get(0).getPrice());
+                updateRecyclerView(mobilePlans);
+                Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+            }
+            break;
+            case 2:
+            {
+                Log.d("dataB", mobilePlans.get(0).getPlanName());
+                sortPlansByPriceDescending(mobilePlans);
+                Log.d("dataA", mobilePlans.get(0).getPrice());
+                updateRecyclerView(mobilePlans);
+                Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+            }
+            break;
+        }
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
+    //
+    // plan sorting in decreasing order
+    public static void sortPlansByPriceDescending(List<planData> plans) {
+        Collections.sort(plans, new Comparator<planData>() {
+            @Override
+            public int compare(planData plan1, planData plan2) {
+                // Compare in reverse order for descending sort
+                return Double.compare(plan2.getPriceAsDouble(), plan1.getPriceAsDouble());
+            }
+        });
+        Log.d("sorted", plans.get(0).getPrice());
+    }
+    public static void sortPlansByPriceAscending(List<planData> plans) {
+        Collections.sort(plans, new Comparator<planData>() {
+            @Override
+            public int compare(planData plan1, planData plan2) {
+                // Compare in normal order for ascending sort
+                return Double.compare(plan1.getPriceAsDouble(), plan2.getPriceAsDouble());
+            }
+        });
     }
 
     //
