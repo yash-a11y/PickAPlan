@@ -3,8 +3,12 @@ package com.example.pickaplan;
 import static androidx.core.app.PendingIntentCompat.getActivity;
 
 
+import static com.example.pickaplan.features.PageRanking.rankPages;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,7 +18,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,15 +34,17 @@ import com.example.pickaplan.API.ApiService;
 import com.example.pickaplan.API.RetrofitClient;
 import com.example.pickaplan.adapter.PageRankAdpH;
 import com.example.pickaplan.adapter.SuggestionsAdapter;
-import com.example.pickaplan.adapter.gridAdapter;
-import com.example.pickaplan.adapter.rankAdp;
+import com.example.pickaplan.adapter.plansAdapter;
+import com.example.pickaplan.dataClass.planData;
+import com.example.pickaplan.dataClass.rankedPlan;
 import com.example.pickaplan.features.WordCompletion.AVLTree;
-import com.example.pickaplan.features.WordCompletion.MinHeap;
 import com.example.pickaplan.features.SearchFrequencyTracker;
 import com.example.pickaplan.fragments.BrandActivity;
 import com.example.pickaplan.fragments.analyticsFragment;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -58,6 +63,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private  RecyclerView pagerankRv;
 
+    private PageRankAdpH rankAdapter;
+    private Context context = this;
+
     private ProgressBar Hprogress;
     RecyclerView suggestionsRecyclerView;
 
@@ -68,13 +76,16 @@ public class HomeActivity extends AppCompatActivity {
     private AVLTree tree;
     private ArrayAdapter<String> adapter;
 
-    //
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Save the search frequencies to the log file
-        tracker.updateLogFile();
+        Log.d("HomeActivity", "onDestroy called");
+        if (tracker != null) {
+            tracker.updateLogFile();
+        } else {
+            Log.w("HomeActivity", "Tracker is null in onDestroy");
+        }
     }
 
 
@@ -84,6 +95,15 @@ public class HomeActivity extends AppCompatActivity {
 
         super.onCreate(savedInstantState);
         setContentView(R.layout.home_activity);
+
+        if (!isUserValid()) {
+            // Redi
+            //        // Check if user is validrect to SignUpActivity if the user is not valid
+            Intent intent = new Intent(HomeActivity.this, Login.class);
+            startActivity(intent);
+            finish();  // Finish the current activity to prevent the user from returning to it
+            return;  // Ensure the rest of onCreate doesn't run
+        }
 
 
         loadFragment(new BrandActivity());
@@ -96,6 +116,7 @@ public class HomeActivity extends AppCompatActivity {
         LinearLayout profilenav = findViewById(R.id.nav_account);
         suggestionsRecyclerView = findViewById(R.id.suggestionsRecyclerView);
         pagerankRv = findViewById(R.id.PagerankRV);
+
         pagerankRv.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         tracker = new SearchFrequencyTracker(this);
 
@@ -153,8 +174,10 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-                showViewWithAnimation(Hprogress);
+                //showViewWithAnimation(Hprogress);
                 showViewWithAnimation(pagerankRv);
+                updateRecyclerView(new ArrayList<>());
+
                 showViewWithAnimation(searchTab);
                 showViewWithAnimation(suggestionsRecyclerView);
 
@@ -172,11 +195,21 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, Register.class);
                 startActivity(intent);
+                pagerankRv.setVisibility(View.GONE);
             }
         });
 
+    }
 
+    // Method to check if the user is valid (You can adapt this method as per your user session management)
+    private boolean isUserValid() {
+        Log.d("gotol","go to login");
 
+        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+
+        // Replace "user_token" with the actual key you use to store the session token or login status
+        String userToken = sharedPref.getString("name", null);
+        return userToken != null;  // Check if the user is logged in by verifying the token
     }
 
 
@@ -217,11 +250,15 @@ public class HomeActivity extends AppCompatActivity {
                 String query = searchTab.getText().toString().trim();
                 if (!query.isEmpty()) {
 
+                    pagerankRv.setVisibility(View.VISIBLE);
+
                     tracker.search(query.toString());
                     tracker.updateLogFile();
                     findKeyword(query,this);
 
                     searchTab.setText("");
+
+
                 }
                 return true;
 
@@ -239,7 +276,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                pagerankRv.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -323,41 +360,21 @@ public class HomeActivity extends AppCompatActivity {
 
     private void findKeyword(String query, Context context) {
         // Show the ProgressBar
-        Hprogress.setVisibility(View.VISIBLE);
-        pagerankRv.setVisibility(View.GONE);
 
-        ApiService apiService = RetrofitClient.getApiService();
-        Call<List<String>> call = apiService.getRanking(query);
-        call.enqueue(new Callback<List<String>>() {
-            @Override
-            public void onResponse(Call<List<String>> linksCall, Response<List<String>> response) {
-                // Hide the ProgressBar
-                Hprogress.setVisibility(View.GONE);
 
-                if (response.isSuccessful() && response.body() != null) {
-                    pagerankRv.setVisibility(View.VISIBLE);
-                    List<String> rankingLinks = response.body();
-                    for (String eachRank : rankingLinks) {
-                        Log.d("rank", eachRank);
-                    }
 
-                    PageRankAdpH rankAdapter = new PageRankAdpH(rankingLinks);
-                    pagerankRv.setAdapter(rankAdapter);
-                } else {
-                    // Handle unsuccessful response
-                    showErrorMessage("Failed to fetch data");
-                }
-            }
+        List<rankedPlan> rankedPlans
+                = pageRankingData(query,context);
 
-            @Override
-            public void onFailure(Call<List<String>> linkCall, Throwable t) {
-                // Hide the ProgressBar
-                Hprogress.setVisibility(View.GONE);
-                pagerankRv.setVisibility(View.GONE);
-                showErrorMessage("Network error: " + t.getMessage());
-                Log.d("fail", t.getMessage());
-            }
-        });
+        if(!rankedPlans.isEmpty()){
+            Hprogress.setVisibility(View.GONE);
+            pagerankRv.setVisibility(View.VISIBLE);
+            Log.d("workf", String.valueOf(rankedPlans.get(0).getFreq()));
+            updateRecyclerView(rankedPlans);
+
+        }
+
+
     }
 
     private void showErrorMessage(String message) {
