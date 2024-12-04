@@ -107,7 +107,7 @@
             />
 
         <Button
-            android:id="@+id/btnSelectPlan"
+            android:id="@+id/btnLikePlan"
             android:layout_width="wrap_content"
             android:layout_height="43dp"
             android:layout_gravity="center"

@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,6 +41,8 @@ import com.example.pickaplan.features.patternFind;
 import com.example.pickaplan.features.spellCheck.SpellChecker;
 import com.example.pickaplan.fragments.BrandActivity;
 import com.example.pickaplan.fragments.analyticsFragment;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,6 +92,8 @@ public class Plans extends AppCompatActivity implements AdapterView.OnItemSelect
 
     private String  topsrch = "";
 
+    private DatabaseReference plansRef;
+
 
     private   plansAdapter adpater;
     @Override
@@ -100,7 +105,9 @@ public class Plans extends AppCompatActivity implements AdapterView.OnItemSelect
 
         searchRV = findViewById(R.id.searchRV);
 
-
+        // Initialize Firebase
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        plansRef = database.getReference("Plans");
 
         priceSorter  = findViewById(R.id.simpleSpinner);
 
@@ -355,6 +362,16 @@ public class Plans extends AppCompatActivity implements AdapterView.OnItemSelect
                 public void onResponse(Call<List<planData>> call, Response<List<planData>> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         List<planData> mobilePlans = response.body();
+
+                        // Upload each plan to Firebase Realtime Database
+                        for (planData plan : mobilePlans) {
+                            String planId = plansRef.push().getKey(); // Get unique ID for the plan
+                            if (planId != null) {
+                                plansRef.child(planId).setValue(plan) // Upload plan data to Firebase
+                                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Plan uploaded successfully"))
+                                        .addOnFailureListener(e -> Log.e("Firebase", "Failed to upload plan", e));
+                            }
+                        }
 
 
                         // Log the retrieved mobile plans data

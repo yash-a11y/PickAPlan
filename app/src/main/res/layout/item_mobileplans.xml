@@ -106,13 +106,13 @@
             android:textSize="14sp" />
 
         <Button
-            android:id="@+id/btnSelectPlan"
+            android:id="@+id/btnLikePlan"
             android:layout_width="wrap_content"
             android:layout_height="43dp"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/primaryAccent"
-            android:text="Select Plan"
+            android:text="Like Plan"
             android:textColor="#121212"
             android:textStyle="bold" />
 
