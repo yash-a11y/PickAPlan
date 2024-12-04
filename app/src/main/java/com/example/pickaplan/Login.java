@@ -73,7 +73,7 @@ public class Login extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
                             if (user.isEmailVerified()) {
-                                Log.d(TAG, "signInWithEmail:success");
+                                Log.d("sucess", "signInWithEmail:success");
                                 updateUI(user);
                             } else {
                                 Toast.makeText(Login.this, "Please verify your email first", Toast.LENGTH_SHORT).show();
@@ -105,18 +105,21 @@ public class Login extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user) {
+        if (user != null) {
+            SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            Log.d("uname", user.getEmail());
+            editor.putString("name", user.getEmail());
+            editor.apply();
 
-        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-
-
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("name", currentUser.getEmail());
-        editor.apply();
-
-        Log.d("gotoh","go to home");
-        Intent intent = new Intent(Login.this, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+            Log.d("gotoh", "go to home");
+            Intent intent = new Intent(Login.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } else {
+            // Handle the case where user is null
+            Log.d("updateUI", "User is null");
+        }
     }
 }

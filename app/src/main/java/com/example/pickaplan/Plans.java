@@ -98,7 +98,7 @@ public class Plans extends AppCompatActivity {
 
 
         mobilePlans = getIntent().getParcelableArrayListExtra("planData");
-        opr = getIntent().getIntExtra("opr",0);
+        opr = getIntent().getIntExtra("opr",-1);
 
 
 
@@ -617,9 +617,11 @@ public class Plans extends AppCompatActivity {
             if (adpater == null) {
 
                 if(opr != -1){
+                    Log.d("oprt0","yes"+opr);
                     adpater = new plansAdapter(Plans.this, newPlanData, opr);
                 }
                 else{
+                    Log.d("oprt1","yes"+oprator);
                     adpater = new plansAdapter(Plans.this, newPlanData, oprator);
                 }
 
