@@ -1,6 +1,7 @@
 package com.example.pickaplan.adapter;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,10 @@ public class myViewholder extends RecyclerView.ViewHolder {
     TextView planName;
     TextView price;
     TextView details;
+
+    Button likeplans;
+
+    private boolean isLiked;
     public myViewholder(View view)
     {
         super(view);
@@ -22,7 +27,17 @@ public class myViewholder extends RecyclerView.ViewHolder {
         planName = view.findViewById(R.id.planTitle);
         price  = view.findViewById(R.id.planPrice);
         details = view.findViewById(R.id.tvPlanDescription);
+        likeplans = view.findViewById(R.id.btnLikePlan);
 
 
+
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }
