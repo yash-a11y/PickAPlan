@@ -68,12 +68,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Plans extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener{
+        implements AdapterView.OnItemSelectedListener {
 
     private AVLTree tree;
 
     private SearchFrequencyTracker tracker;
     private RecyclerView plans;
+
+    List<planData> prvPlans = new ArrayList<>();
     private RecyclerView searchRV;
     private Intent intent;
     private int oprator;
@@ -97,6 +99,7 @@ public class Plans extends AppCompatActivity
     private TextView notFound;
 
     private SuggestionsAdapter searchAdp;
+    private LinearLayout spinnertab;
 
     private String  topsrch = "";
 
@@ -105,6 +108,8 @@ public class Plans extends AppCompatActivity
 
 
     private Spinner priceSorter;
+    private Spinner connectivity;
+    private Spinner GB;
 
 
     private   plansAdapter adpater;
@@ -116,6 +121,7 @@ public class Plans extends AppCompatActivity
         setContentView(R.layout.activity_plans);
 
         searchRV = findViewById(R.id.searchRV);
+        spinnertab = findViewById(R.id.spinner_tab);
 
         // Initialize Firebase
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -123,6 +129,7 @@ public class Plans extends AppCompatActivity
 
 
         priceSorter  = findViewById(R.id.simpleSpinner);
+        GB = findViewById(R.id.GBspinner);
 
 
         mobilePlans = getIntent().getParcelableArrayListExtra("planData");
@@ -172,6 +179,14 @@ public class Plans extends AppCompatActivity
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         priceSorter.setAdapter(adapter);
+
+
+        GB.setOnItemSelectedListener(this);
+        ArrayAdapter<CharSequence> adapterGB = ArrayAdapter.createFromResource(this,
+                R.array.GBA, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        GB.setAdapter(adapterGB);
         //
 
         if(!topSearch.isEmpty())
@@ -238,6 +253,7 @@ public class Plans extends AppCompatActivity
 
                 hideViewWithAnimation(searchRV);
                 hideViewWithAnimation(searchBar);
+                hideViewWithAnimation(spinnertab);
 
 //                options.setVisibility(View.GONE);
 
@@ -274,6 +290,7 @@ public class Plans extends AppCompatActivity
             searchBar.setVisibility(View.GONE);
             searchRV.setVisibility(View.GONE
             );
+
 
             plans.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
 
@@ -735,27 +752,77 @@ public class Plans extends AppCompatActivity
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String item = parent.getItemAtPosition(position).toString();
-        switch (position)
-        {
-            case 1:
-            {
-                Log.d("dataB", mobilePlans.get(0).getPlanName());
-                sortPlansByPriceAscending(mobilePlans);
-                Log.d("dataA", mobilePlans.get(0).getPrice());
-                updateRecyclerView(mobilePlans);
-                Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+        if(prvPlans.isEmpty()) prvPlans = mobilePlans;
+        if (parent.getId() == R.id.simpleSpinner) {
+            switch (position) {
+                case 1: {
+                    Log.d("dataB", mobilePlans.get(0).getPlanName());
+                    sortPlansByPriceAscending(mobilePlans);
+                    Log.d("dataA", mobilePlans.get(0).getPrice());
+                    updateRecyclerView(mobilePlans);
+                    Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+                    break;
+                }
+                case 2: {
+                    Log.d("dataB", mobilePlans.get(0).getPlanName());
+                    sortPlansByPriceDescending(mobilePlans);
+                    Log.d("dataA", mobilePlans.get(0).getPrice());
+                    updateRecyclerView(mobilePlans);
+                    Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+                    break;
+                }
             }
-            break;
-            case 2:
-            {
-                Log.d("dataB", mobilePlans.get(0).getPlanName());
-                sortPlansByPriceDescending(mobilePlans);
-                Log.d("dataA", mobilePlans.get(0).getPrice());
-                updateRecyclerView(mobilePlans);
-                Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+        } else if (parent.getId() == R.id.GBspinner) {
+            mobilePlans = prvPlans;
+            switch (position) {
+
+                case 1: {
+
+                    mobilePlans = patternFind.searchResults(mobilePlans, "\\b(([1-9][0-9]{2,3}|1000)\\s?[mM][bB]|1\\s?[gG][bB])\\b");
+                    updateRecyclerView(mobilePlans);
+                    Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+
+                }
+                break;
+                case 2: {
+
+                    mobilePlans = patternFind.searchResults(mobilePlans, "\\b([1-9]|[0-9]|30)\\s?[gG][bB]\\b");
+                    updateRecyclerView(mobilePlans);
+                    Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+
+                }
+                break;
+                case 3: {
+
+                    mobilePlans = patternFind.searchResults(mobilePlans, "\\b(3[0-9]|[0-9]|60)\\s?[gG][bB]\\b");
+                    updateRecyclerView(mobilePlans);
+                    Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+
+                }
+                break;
+                case 4: {
+
+                    mobilePlans = patternFind.searchResults(mobilePlans, "\\b(6[1-9]|789[0-9]|100)\\s?[gG][bB]\\b");
+                    updateRecyclerView(mobilePlans);
+                    Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+
+                }
+                break;
+                case 5: {
+
+                    mobilePlans = patternFind.searchResults(mobilePlans, "\\b(11\n[0-9]|12[0-9]|1[3-9][0-9]|[2-9][0-9]{2,})\\s?[gG][bB]\\b");
+                    updateRecyclerView(mobilePlans);
+                    Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+
+                }
+                break;
+
             }
-            break;
+
+
         }
+// Add more else if blocks for other spinners as needed
+
     }
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
@@ -843,6 +910,8 @@ public class Plans extends AppCompatActivity
 
         return present[0];
     }
+
+
 
 
     //

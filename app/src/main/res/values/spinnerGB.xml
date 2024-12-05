@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="GBA">
+        <item>Data</item>
+        <item>100 MB-1GB/Mo</item>
+        <item>1GB-30GB/Mo</item>
+        <item>30GB-60GB/Mo</item>
+        <item>60GB-100GB/Mo</item>
+        <item>>100GB/Mo</item>
+    </string-array>
+</resources>
