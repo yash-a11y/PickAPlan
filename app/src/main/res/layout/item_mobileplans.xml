@@ -107,16 +107,28 @@
             android:textColor="#CCCCCC"
             android:textSize="14sp" />
 
+
+        <TextView
+            android:id="@+id/likes"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="3dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/item_text_shape"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"/>
         <Button
             android:id="@+id/btnLikePlan"
             android:layout_width="wrap_content"
             android:layout_height="43dp"
             android:layout_gravity="center"
-            android:layout_marginTop="8dp"
             android:backgroundTint="@color/primaryAccent"
             android:text="Like Plan"
             android:textColor="#121212"
             android:textStyle="bold" />
+
 
     </LinearLayout>
 

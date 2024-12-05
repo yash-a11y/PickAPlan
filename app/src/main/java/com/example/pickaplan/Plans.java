@@ -39,6 +39,7 @@ import com.example.pickaplan.features.WordCompletion.MinHeap;
 import com.example.pickaplan.features.patternFind;
 import com.example.pickaplan.features.spellCheck.SpellChecker;
 import com.example.pickaplan.fragments.BrandActivity;
+import com.example.pickaplan.fragments.RecomendFrag;
 import com.example.pickaplan.fragments.analyticsFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -58,6 +59,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,7 +119,7 @@ public class Plans extends AppCompatActivity
 
         // Initialize Firebase
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        plansRef = database.getReference("Plans");
+        plansRef = database.getReference("Plans_");
 
 
         priceSorter  = findViewById(R.id.simpleSpinner);
@@ -249,7 +251,7 @@ public class Plans extends AppCompatActivity
                 ImageView analysisIMG = findViewById(R.id.analysisimg);
                 analysisIMG.setImageResource(R.drawable.green_analysis);
 
-                loadFragment(new analyticsFragment());
+                loadFragment(new RecomendFrag());
             }
         });
 
@@ -401,15 +403,41 @@ public class Plans extends AppCompatActivity
                         List<planData> mobilePlans = response.body();
 
 
+//                        // Upload each plan to Firebase Realtime Database
+//                        for (planData plan : mobilePlans) {
+//
+//                            Log.d("dataplan",plan.toString() );
+//                            String planId = plansRef.push().getKey(); // Get unique ID for the plan
+//                            if (planId != null) {
+//                                plansRef.child(planId).setValue(plan) // Upload plan data to Firebase
+//                                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Plan uploaded successfully"))
+//                                        .addOnFailureListener(e -> Log.e("Firebase", "Failed to upload plan", e));
+//                            }
+//                        }
+
                         // Upload each plan to Firebase Realtime Database
                         for (planData plan : mobilePlans) {
-                            String planId = plansRef.push().getKey(); // Get unique ID for the plan
+                            Log.d("dataplan", plan.toString());
+
+                            // Create a unique ID for each plan
+                            String planId = plansRef.push().getKey();
+
                             if (planId != null) {
-                                plansRef.child(planId).setValue(plan) // Upload plan data to Firebase
+                                // Create a map to store only the required fields
+                                Map<String, Object> planMap = new HashMap<>();
+                                planMap.put("brand", oprator); // Add brand (if needed)
+                                planMap.put("planname", plan.getPlanName()); // Add planName
+                                planMap.put("planprice", plan.getPrice()); // Add price
+                                planMap.put("details", plan.getDetails()); // Add details
+                                planMap.put("likes", plan.getLikes()); // Add likes (if needed)
+
+                                // Upload the map to Firebase under the unique planId
+                                plansRef.child(planId).setValue(planMap)
                                         .addOnSuccessListener(aVoid -> Log.d("Firebase", "Plan uploaded successfully"))
                                         .addOnFailureListener(e -> Log.e("Firebase", "Failed to upload plan", e));
                             }
                         }
+
 
 
                         // Log the retrieved mobile plans data

@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pickaplan.R;
@@ -23,13 +22,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 import java.util.Map;
 
-public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
+public class plansAdapter extends RecyclerView.Adapter<myViewholder> {
 
     private Context context;
     private List<planData> plans;
     private int operator;
 
-    public plansAdapter(Context context, List<planData> plans, int operator){
+    public plansAdapter(Context context, List<planData> plans, int operator) {
         this.plans = plans;
         this.context = context;
         this.operator = operator;
@@ -38,7 +37,7 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
     @NonNull
     @Override
     public myViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view =  LayoutInflater.from(context).inflate(R.layout.item_mobileplans,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_mobileplans, parent, false);
         return new myViewholder(view);
     }
 
@@ -53,7 +52,9 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
             } else {
                 holder.likeplans.setOnClickListener(v -> {
                     Toast.makeText(context, plan.getPlanName() + " Liked!", Toast.LENGTH_SHORT).show();
+                    plan.setBrand(operator);
                     saveLikedPlan(plan);
+                    golbLiked((plan.getPlanName().trim().toLowerCase() + " " + plan.getPrice().trim().toLowerCase()));
                     holder.likeplans.setVisibility(View.GONE);
                 });
             }
@@ -76,27 +77,15 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
         holder.details.setText(plan.getDetails());
     }
 
-
     private void saveLikedPlan(planData plan) {
-
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Get the current user's ID
-//        DatabaseReference plansId = FirebaseDatabase.getInstance().getReference("plansid");
-
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
-        // Create a unique key for each liked plan
-        //DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Plans");
-
-        // Create a LikedPlan object to store in the database
-        //planData likedPlan = new planData(plan.getBrand(), plan.getPlanName(), plan.getPrice(), plan.getDetails());
-
         // Add the plan ID to the user's likedPlans
-        databaseRef.child("Users").child(userId).child("Plans").child(plan.getPlanName()+" "+plan.getPrice())
+        databaseRef.child("Users").child(userId).child("Plans").child(plan.getPlanName() + " " + plan.getPrice())
                 .setValue(true)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(context, "Plan liked!", Toast.LENGTH_SHORT).show();
-
-
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -113,7 +102,6 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
         notifyDataSetChanged();  // Refreshes the entire RecyclerView
     }
 
-
     public static void likedCommonPlans(Context context, planData plan, FirebasePlanCheckListener listener) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(userId);
@@ -129,7 +117,7 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
                         if (plans != null) {
                             for (Map.Entry<String, Boolean> entry : plans.entrySet()) {
                                 String planName = entry.getKey();
-                                if (planName.trim().equalsIgnoreCase(plan.getPlanName().trim()+" "+plan.getPrice().trim())) {
+                                if (planName.trim().equalsIgnoreCase(plan.getPlanName().trim() + " " + plan.getPrice().trim())) {
                                     isPresent = true;
                                     break;
                                 }
@@ -148,6 +136,77 @@ public  class plansAdapter extends  RecyclerView.Adapter<myViewholder>{
         });
     }
 
+    public static void golbLiked(String planstr) {
+        DatabaseReference planRef = FirebaseDatabase.getInstance().getReference("Plans_");
+
+        // Retrieve all plans from Firebase
+        planRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Check if there are any plans
+
+
+                if (dataSnapshot.exists()) {
+                    // Iterate through all plans
+                    for (DataSnapshot planSnapshot : dataSnapshot.getChildren()) {
+                        // Get plan data for each plan
+                      //  planData plan = planSnapshot.getValue(planData.class);
+
+
+
+                        planData plan = new planData();
+                        if (planSnapshot.child("brand").exists()) {
+                            plan.setBrand(planSnapshot.child("brand").getValue(Integer.class));
+                        }
+                        if (planSnapshot.child("planname").exists()) {
+                            plan.setPlanName(planSnapshot.child("planname").getValue(String.class));
+                        }
+                        if (planSnapshot.child("planprice").exists()) {
+                            plan.setPlanPrice(planSnapshot.child("planprice").getValue(String.class));
+                        }
+                        if (planSnapshot.child("details").exists()) {
+                            plan.setDetails(planSnapshot.child("details").getValue(String.class));
+                        }
+                        if (planSnapshot.child("likes").exists()) {
+                            plan.setLikes(planSnapshot.child("likes").getValue(Integer.class));
+                        }
+
+
+
+
+                        if (plan != null) {
+                            Log.d("atenter", "yes");
+                            // Increment the like count (increase frequency)
+                            Log.d("golbLiked", "Comparing input: " + planstr + " with plan: " + plan.getPlanName() + " " + plan.getPrice());
+
+                            // Match planName and price to increment like frequency
+                            if (planstr.trim().equalsIgnoreCase(plan.getPlanName().trim() + " " + plan.getPrice().trim())) {
+                                // Handle null likes and initialize if necessary
+                                int currentLikes = plan.getLikes();
+                                if (currentLikes == 0) {
+                                    plan.setLikes(1);  // Initialize to 1 if likes are 0 or null
+                                } else {
+                                    plan.setLikes(currentLikes + 1);  // Increment like count
+                                }
+
+                                // Update the plan in the Firebase database with the incremented like count
+                                planRef.child(planSnapshot.getKey()).setValue(plan)
+                                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Plan like frequency updated successfully"))
+                                        .addOnFailureListener(e -> Log.e("Firebase", "Failed to update like frequency", e));
+                            }
+                        }
+                    }
+                } else {
+                    Log.d("Firebase", "No plans found.");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle errors
+                Log.e("Firebase", "Failed to read plans: " + databaseError.getMessage());
+            }
+        });
+    }
 
 }
-

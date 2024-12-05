@@ -13,22 +13,6 @@
 
     <!-- Search Bar -->
 
-    <EditText
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Search"
-        android:padding="12dp"
-        android:background="@drawable/searchbar_shape"
-        android:textColorHint="#999999"
-        android:textColor="#FFFFFF"
-        android:paddingStart="16dp"
-        android:drawableEnd="@drawable/baseline_search_24"
-        android:paddingEnd="16dp"
-        android:layout_margin="16dp"
-        android:inputType="text"
-        android:singleLine="true"
-        android:imeOptions="actionSearch"/>
 
 
     <ProgressBar
@@ -40,6 +24,12 @@
         android:visibility="gone" />
 
     <!-- GridView -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_gravity="center">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/plan_view"
         android:layout_width="match_parent"
@@ -52,5 +42,6 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:verticalSpacing="8dp" />
+    </LinearLayout>
 
 </LinearLayout>

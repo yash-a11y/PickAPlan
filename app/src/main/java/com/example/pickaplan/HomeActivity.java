@@ -40,6 +40,7 @@ import com.example.pickaplan.dataClass.rankedPlan;
 import com.example.pickaplan.features.WordCompletion.AVLTree;
 import com.example.pickaplan.features.SearchFrequencyTracker;
 import com.example.pickaplan.fragments.BrandActivity;
+import com.example.pickaplan.fragments.RecomendFrag;
 import com.example.pickaplan.fragments.analyticsFragment;
 
 import java.io.BufferedReader;
@@ -159,7 +160,7 @@ public class HomeActivity extends AppCompatActivity {
                 ImageView analysisIMG = findViewById(R.id.analysisimg);
                 analysisIMG.setImageResource(R.drawable.green_analysis);
 
-                loadFragment(new analyticsFragment());
+                loadFragment(new RecomendFrag());
             }
         });
 
