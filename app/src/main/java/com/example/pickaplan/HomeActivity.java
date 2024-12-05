@@ -193,7 +193,7 @@ public class HomeActivity extends AppCompatActivity {
         profilenav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, Register.class);
+                Intent intent = new Intent(HomeActivity.this, Profile.class);
                 startActivity(intent);
                 pagerankRv.setVisibility(View.GONE);
             }

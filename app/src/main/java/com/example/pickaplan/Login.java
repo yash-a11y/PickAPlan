@@ -56,9 +56,6 @@ public class Login extends AppCompatActivity {
         super.onStart();
          currentUser = mAuth.getCurrentUser();
         if (currentUser != null && currentUser.isEmailVerified()) {
-
-
-
             updateUI(currentUser);
         }
     }
