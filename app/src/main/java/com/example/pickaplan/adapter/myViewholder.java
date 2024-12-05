@@ -17,6 +17,7 @@ public class myViewholder extends RecyclerView.ViewHolder {
     TextView details;
 
     Button likeplans;
+    TextView notFound;
 
     private boolean isLiked;
     public myViewholder(View view)
@@ -28,6 +29,7 @@ public class myViewholder extends RecyclerView.ViewHolder {
         price  = view.findViewById(R.id.planPrice);
         details = view.findViewById(R.id.tvPlanDescription);
         likeplans = view.findViewById(R.id.btnLikePlan);
+        notFound = view.findViewById(R.id.notFound);
 
 
 
