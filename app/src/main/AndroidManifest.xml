@@ -16,11 +16,14 @@
         android:theme="@style/appTheme"
         tools:targetApi="31">
         <activity
+            android:name=".Profile"
+            android:exported="false" />
+        <activity
             android:name=".Login"
             android:exported="false" />
         <activity
             android:name=".Register"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Plans"
             android:exported="true"
