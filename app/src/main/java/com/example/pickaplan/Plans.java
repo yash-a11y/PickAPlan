@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -419,24 +420,59 @@ public class Plans extends AppCompatActivity
                         for (planData plan : mobilePlans) {
                             Log.d("dataplan", plan.toString());
 
-                            // Create a unique ID for each plan
-                            String planId = plansRef.push().getKey();
+                            // Create a map with the fields to check for duplicates
+                            String planName = plan.getPlanName();
+                            String price = plan.getPrice();
+                            //int boperator = oprator; // Operator as an integer
 
-                            if (planId != null) {
-                                // Create a map to store only the required fields
-                                Map<String, Object> planMap = new HashMap<>();
-                                planMap.put("brand", oprator); // Add brand (if needed)
-                                planMap.put("planname", plan.getPlanName()); // Add planName
-                                planMap.put("planprice", plan.getPrice()); // Add price
-                                planMap.put("details", plan.getDetails()); // Add details
-                                planMap.put("likes", plan.getLikes()); // Add likes (if needed)
+                            // Query the database to check for duplicate entries
+                            plansRef.orderByChild("planname").equalTo(planName).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    boolean duplicateFound = false;
 
-                                // Upload the map to Firebase under the unique planId
-                                plansRef.child(planId).setValue(planMap)
-                                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Plan uploaded successfully"))
-                                        .addOnFailureListener(e -> Log.e("Firebase", "Failed to upload plan", e));
-                            }
+                                    // Loop through existing plans to check for matching price and operator
+                                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                                        String existingPrice = childSnapshot.child("planprice").getValue(String.class);
+                                        Integer existingOperator = childSnapshot.child("brand").getValue(Integer.class);
+
+                                        if (price.equals(existingPrice) && oprator == existingOperator) {
+                                            duplicateFound = true;
+                                            break;
+                                        }
+                                    }
+
+                                    // If no duplicate is found, upload the plan
+                                    if (!duplicateFound) {
+                                        // Create a unique ID for the new plan
+                                        String planId = plansRef.push().getKey();
+
+                                        if (planId != null) {
+                                            // Create a map to store only the required fields
+                                            Map<String, Object> planMap = new HashMap<>();
+                                            planMap.put("brand", oprator); // Add operator as integer
+                                            planMap.put("planname", planName); // Add planName
+                                            planMap.put("planprice", price); // Add price
+                                            planMap.put("details", plan.getDetails()); // Add details
+                                            planMap.put("likes", plan.getLikes()); // Add likes (if needed)
+
+                                            // Upload the map to Firebase under the unique planId
+                                            plansRef.child(planId).setValue(planMap)
+                                                    .addOnSuccessListener(aVoid -> Log.d("Firebase", "Plan uploaded successfully"))
+                                                    .addOnFailureListener(e -> Log.e("Firebase", "Failed to upload plan", e));
+                                        }
+                                    } else {
+                                        Log.d("Firebase", "Duplicate plan found, skipping upload: " + planName);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Log.e("Firebase", "Error checking for duplicates", error.toException());
+                                }
+                            });
                         }
+
 
 
 
