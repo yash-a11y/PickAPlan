@@ -1,8 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+}
 
-
+repositories {
+    mavenCentral()
 }
 
 android {
@@ -70,4 +72,6 @@ dependencies {
     implementation ("com.google.android.material:material:1.7.0")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
 
+    // Razorpay SDK
+    implementation("com.razorpay:checkout:1.6.33")
 }

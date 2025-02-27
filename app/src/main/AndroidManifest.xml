@@ -38,6 +38,9 @@
             android:name=".MainActivity"
             android:exported="true" />
         <activity android:name=".HomeActivity" />
+        <activity
+            android:name=".PaymentActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
