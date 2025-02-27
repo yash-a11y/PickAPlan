@@ -43,7 +43,6 @@ import com.example.pickaplan.fragments.analyticsFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.razorpay.PaymentResultListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +62,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Plans extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener, PaymentResultListener {
+        implements AdapterView.OnItemSelectedListener {
 
     private AVLTree tree;
 
@@ -116,8 +115,8 @@ public class Plans extends AppCompatActivity
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         plansRef = database.getReference("Plans");
 
-        // Initialize Razorpay
-        com.razorpay.Checkout.preload(getApplicationContext());
+
+
 
         priceSorter  = findViewById(R.id.simpleSpinner);
 
@@ -751,31 +750,5 @@ public class Plans extends AppCompatActivity
 
     //
 
-    @Override
-    public void onPaymentSuccess(String razorpayPaymentID) {
-        try {
-            Toast.makeText(this, "Payment Successful: " + razorpayPaymentID, Toast.LENGTH_SHORT).show();
-            // Here you can update your database or UI to reflect successful payment
-            // For example, you could store the payment ID in Firebase
-            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference paymentRef = FirebaseDatabase.getInstance().getReference()
-                    .child("Users")
-                    .child(userId)
-                    .child("Payments");
-                paymentRef.child(razorpayPaymentID).setValue(true);
-            }
-        } catch (Exception e) {
-            Log.e("PAYMENT_SUCCESS", "Exception in onPaymentSuccess", e);
-        }
-    }
 
-    @Override
-    public void onPaymentError(int code, String response) {
-        try {
-            Toast.makeText(this, "Payment Failed: " + response, Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Log.e("PAYMENT_ERROR", "Exception in onPaymentError", e);
-        }
-    }
 }
