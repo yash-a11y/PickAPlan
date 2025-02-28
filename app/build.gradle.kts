@@ -34,7 +34,7 @@ android {
 
 dependencies {
     // Stripe SDK
-    implementation("com.stripe:stripe-android:20.25.8")  // Using a specific version known to work
+    implementation ("com.stripe:stripe-android:20.25.8") // Using a specific version known to work
     implementation("com.stripe:stripe-java:22.10.0")
     
     implementation ("com.google.android.material:material:1.9.0")
