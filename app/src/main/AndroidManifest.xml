@@ -16,6 +16,9 @@
         android:theme="@style/appTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
         <activity
             android:name=".Login"
             android:exported="false" />
@@ -39,9 +42,7 @@
             android:name=".MainActivity"
             android:exported="true" />
         <activity android:name=".HomeActivity" />
-        <activity
-            android:name=".PaymentActivity"
-            android:exported="false" />
+
     </application>
 
 </manifest>
