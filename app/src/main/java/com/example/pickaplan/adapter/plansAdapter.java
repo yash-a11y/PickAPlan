@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +21,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 import java.util.Map;
+import org.json.JSONObject;
+import com.example.pickaplan.payment.StripePaymentHandler;
+import okhttp3.*;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class plansAdapter extends RecyclerView.Adapter<myViewholder> {
 
@@ -28,10 +33,23 @@ public class plansAdapter extends RecyclerView.Adapter<myViewholder> {
     private List<planData> plans;
     private int operator;
 
+    private static final String TAG = "plansAdapter";
+    private static final String STRIPE_PUBLISHABLE_KEY = "YOUR_PUBLISHABLE_KEY"; // Replace with your key
+    private static final String BACKEND_URL = "http://10.0.2.2:8080/api/stripe"; // For Android emulator
+    private StripePaymentHandler stripePaymentHandler;
+
     public plansAdapter(Context context, List<planData> plans, int operator) {
         this.plans = plans;
         this.context = context;
         this.operator = operator;
+
+        if (context instanceof AppCompatActivity) {
+            try {
+                stripePaymentHandler = new StripePaymentHandler((AppCompatActivity) context, STRIPE_PUBLISHABLE_KEY);
+            } catch (Exception e) {
+                Log.e(TAG, "Error initializing Stripe: " + e.getMessage());
+            }
+        }
     }
 
     @NonNull
@@ -60,6 +78,8 @@ public class plansAdapter extends RecyclerView.Adapter<myViewholder> {
             }
         });
 
+
+
         Log.d("plansAdapter", "Binding plan at position: " + position + ", Name: " + plan.getPlanName());
 
         // Set operator-specific image
@@ -75,8 +95,93 @@ public class plansAdapter extends RecyclerView.Adapter<myViewholder> {
         holder.planName.setText(plan.getPlanName());
         holder.price.setText("$" + plan.getPrice());
         holder.details.setText(plan.getDetails());
+        holder.itemView.setOnClickListener(v -> {
+
+            startPayment(plan);
+        });
     }
 
+    private void startPayment(planData plan) {
+        if (stripePaymentHandler == null) {
+            Log.e(TAG, "Payment handler is null!");
+            showToast("Payment system not available");
+            return;
+        }
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+
+        JSONObject requestJson = new JSONObject();
+        try {
+            String priceStr = plan.getPrice().replace("$", "").trim();
+            double priceAmount = Double.parseDouble(priceStr) * 100;
+
+            requestJson.put("amount", (int)priceAmount);
+            requestJson.put("currency", "CAD");
+            requestJson.put("description", "Payment for " + plan.getPlanName());
+
+            Log.d(TAG, "Payment request: " + requestJson.toString());
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating payment request: " + e.getMessage());
+            showToast("Error creating payment request");
+            return;
+        }
+
+        RequestBody body = RequestBody.create(mediaType, requestJson.toString());
+        Request request = new Request.Builder()
+                .url(BACKEND_URL + "/create-payment-intent")
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e(TAG, "Network error: " + e.getMessage());
+                showToast("Network error: Please check your internet connection");
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String responseBody = response.body() != null ? response.body().string() : "No response body";
+                Log.d(TAG, "Server response: " + responseBody);
+
+                if (!response.isSuccessful()) {
+                    Log.e(TAG, "Server error: " + response.code());
+                    showToast("Server error " + response.code() + ": Please try again later");
+                    return;
+                }
+
+                try {
+                    JSONObject responseJson = new JSONObject(responseBody);
+                    String clientSecret = responseJson.getString("clientSecret");
+
+                    if (context instanceof AppCompatActivity) {
+                        ((AppCompatActivity) context).runOnUiThread(() -> {
+                            stripePaymentHandler.handleServerResponse(clientSecret);
+                        });
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing response: " + e.getMessage());
+                    showToast("Error processing payment response");
+                }
+            }
+        });
+    }
+
+
+    private void showToast(String message) {
+        if (context instanceof AppCompatActivity) {
+            ((AppCompatActivity) context).runOnUiThread(() ->
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            );
+        }
+    }
     private void saveLikedPlan(planData plan) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Get the current user's ID
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
