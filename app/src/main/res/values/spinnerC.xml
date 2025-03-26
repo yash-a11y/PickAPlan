@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="data_array">
+        <item> </item>
+        <item>4G</item>
+        <item>5G</item>
+        <item>Talk/Text </item>
+    </string-array>
+</resources>

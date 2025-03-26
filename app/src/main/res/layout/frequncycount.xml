@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        >
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_fido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fido"
+            android:textColor="@color/primaryAccent"
+            app:chipBackgroundColor="@color/cardcolor2" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_rogers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rogers"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
+            android:textColor="#FFFFFF"
+            app:chipBackgroundColor="@color/cardcolor2" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_virgin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Virgin"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
+            android:textColor="#FFFFFF"
+            app:chipBackgroundColor="@color/cardcolor2" />
+
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_tellus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Telus"
+            android:textColor="#FFFFFF"
+            app:chipBackgroundColor="@color/cardcolor2" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container_operator"
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+</LinearLayout>

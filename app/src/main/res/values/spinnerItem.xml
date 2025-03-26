@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="planets_array">
+        <item>Price</item>
+        <item>Low to High</item>
+        <item>High to Low</item>
+    </string-array>
+</resources>

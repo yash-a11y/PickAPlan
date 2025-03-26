@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose A plan"
+        android:textSize="25sp"
+        android:textFontWeight="700"
+        android:layout_margin="8dp"/>
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="According to your preferences"
+        android:textSize="12sp"
+        android:layout_margin="8dp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        >
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_top_liked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Top Liked Plans"
+            android:textColor="@color/primaryAccent"
+            app:chipBackgroundColor="@color/cardcolor2" />
+
+
+    </LinearLayout>
+
+
+
+    <FrameLayout
+        android:id="@+id/fragment_container_an"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+</LinearLayout>
