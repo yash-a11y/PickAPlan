@@ -1,4 +1,4 @@
-Here's a structured README.md file for your GitHub repository:
+
 
 
 # PickAPlan - Subscription Management App
